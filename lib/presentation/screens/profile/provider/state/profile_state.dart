@@ -1,4 +1,4 @@
-import 'package:sns_app/data/models/user.dart';
+import 'package:sns_app/data/models/user_modle.dart';
 
 class ProfileState {
   final User? user;
