@@ -28,7 +28,6 @@ class FeedNotifier extends StateNotifier<FeedState> {
         FirebaseFirestore.instance.collection('posts').doc(post.postId);
     bool isLiked = post.likes.contains(uid);
 
-    // Firestore에서 좋아요 상태 업데이트
     await docRef.update({
       'likes': isLiked
           ? FieldValue.arrayRemove([uid])
@@ -36,7 +35,6 @@ class FeedNotifier extends StateNotifier<FeedState> {
       'likesCount': FieldValue.increment(isLiked ? -1 : 1),
     });
 
-    // 상태에서 posts를 업데이트
     final updatedPosts = state.posts.map((p) {
       if (p.postId == post.postId) {
         return p.copyWith(
