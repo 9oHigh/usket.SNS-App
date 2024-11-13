@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class PostModel {
   final String postId;
   final String uid;
@@ -7,6 +9,7 @@ class PostModel {
   final String caption;
   final int likesCount;
   final List<String> likes;
+  final Timestamp createdAt;
 
   PostModel({
     required this.postId,
@@ -17,18 +20,21 @@ class PostModel {
     required this.caption,
     required this.likesCount,
     required this.likes,
+    required this.createdAt,
   });
 
-  factory PostModel.fromDocument(Map<String, dynamic> doc) {
+  factory PostModel.fromDocument(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return PostModel(
-      postId: doc['postId'],
-      uid: doc['uid'],
-      username: doc['username'],
-      profileImageUrl: doc['profileImageUrl'],
-      imageUrl: doc['imageUrl'],
-      caption: doc['caption'],
-      likesCount: doc['likesCount'] ?? 0,
-      likes: List<String>.from(doc['likes'] ?? []),
+      postId: doc.id,
+      uid: data['uid'],
+      username: data['username'],
+      profileImageUrl: data['profileImageUrl'],
+      imageUrl: data['imageUrl'],
+      caption: data['caption'],
+      likesCount: data['likesCount'] ?? 0,
+      likes: List<String>.from(data['likes'] ?? []),
+      createdAt: data['createdAt'],
     );
   }
 
@@ -42,9 +48,11 @@ class PostModel {
       'caption': caption,
       'likesCount': likesCount,
       'likes': likes,
+      'createdAt': createdAt,
     };
   }
 
+  // copyWith 메서드 추가
   PostModel copyWith({
     String? postId,
     String? uid,
@@ -54,6 +62,7 @@ class PostModel {
     String? caption,
     int? likesCount,
     List<String>? likes,
+    Timestamp? createdAt,
   }) {
     return PostModel(
       postId: postId ?? this.postId,
@@ -64,6 +73,7 @@ class PostModel {
       caption: caption ?? this.caption,
       likesCount: likesCount ?? this.likesCount,
       likes: likes ?? this.likes,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 }

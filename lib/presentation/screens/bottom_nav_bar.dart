@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:sns_app/presentation/screens/feed/create_post_screen.dart';
+import 'package:sns_app/presentation/screens/create_post/create_post_screen.dart';
 import 'package:sns_app/presentation/screens/feed/feed_screen.dart';
 import 'package:sns_app/presentation/screens/profile/profile_screen.dart';
 
