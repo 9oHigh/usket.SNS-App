@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sns_app/presentation/screens/feed/post_card.dart';
 import 'package:sns_app/presentation/screens/feed/provider/feed_notifier_provider.dart';
+import 'package:sns_app/presentation/widgets/post_card.dart';
 
 class FeedScreen extends ConsumerWidget {
   @override

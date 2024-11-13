@@ -10,8 +10,8 @@ class PostCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final uid = 'YOUR_USER_ID';
     final feedNotifier = ref.read(feedNotifierProvider.notifier);
+    final uid = 'YOUR_USER_ID';
 
     return Card(
       child: Column(
@@ -32,17 +32,13 @@ class PostCard extends ConsumerWidget {
           Row(
             children: [
               IconButton(
-                icon: Icon(Icons.favorite,
-                    color: post.likes.contains(uid) ? Colors.red : Colors.grey),
-                onPressed: () {
-                  feedNotifier.toggleLike(post, uid);
-                },
+                icon: Icon(
+                  Icons.favorite,
+                  color: post.likes.contains(uid) ? Colors.red : Colors.grey,
+                ),
+                onPressed: () => feedNotifier.toggleLike(post, uid),
               ),
               Text('${post.likesCount} likes'),
-              IconButton(
-                icon: Icon(Icons.comment),
-                onPressed: () {}, //댓글 기능 추가해야함.
-              ),
             ],
           ),
         ],

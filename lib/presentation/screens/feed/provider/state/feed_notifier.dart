@@ -9,12 +9,13 @@ class FeedNotifier extends StateNotifier<FeedState> {
   Future<void> loadFeed() async {
     state = state.copyWith(isLoading: true);
     try {
-      final snapshot =
-          await FirebaseFirestore.instance.collection('posts').get();
-      final posts = snapshot.docs
-          .map((doc) =>
-              PostModel.fromDocument(doc.data() as Map<String, dynamic>))
-          .toList();
+      final snapshot = await FirebaseFirestore.instance
+          .collection('posts')
+          .orderBy('createdAt', descending: true)
+          .get();
+
+      final posts =
+          snapshot.docs.map((doc) => PostModel.fromDocument(doc)).toList();
 
       state = state.copyWith(posts: posts, isLoading: false);
     } catch (e) {
@@ -25,31 +26,24 @@ class FeedNotifier extends StateNotifier<FeedState> {
   Future<void> toggleLike(PostModel post, String uid) async {
     final docRef =
         FirebaseFirestore.instance.collection('posts').doc(post.postId);
+    bool isLiked = post.likes.contains(uid);
 
-    if (post.likes.contains(uid)) {
-      await docRef.update({
-        'likes': FieldValue.arrayRemove([uid]),
-        'likesCount': FieldValue.increment(-1),
-      });
-    } else {
-      await docRef.update({
-        'likes': FieldValue.arrayUnion([uid]),
-        'likesCount': FieldValue.increment(1),
-      });
-    }
+    // Firestore에서 좋아요 상태 업데이트
+    await docRef.update({
+      'likes': isLiked
+          ? FieldValue.arrayRemove([uid])
+          : FieldValue.arrayUnion([uid]),
+      'likesCount': FieldValue.increment(isLiked ? -1 : 1),
+    });
 
+    // 상태에서 posts를 업데이트
     final updatedPosts = state.posts.map((p) {
       if (p.postId == post.postId) {
-        final updatedLikes = List<String>.from(post.likes);
-        if (post.likes.contains(uid)) {
-          updatedLikes.remove(uid);
-        } else {
-          updatedLikes.add(uid);
-        }
-
         return p.copyWith(
-          likes: updatedLikes,
-          likesCount: post.likesCount + (post.likes.contains(uid) ? -1 : 1),
+          likes: isLiked
+              ? (List<String>.from(p.likes)..remove(uid))
+              : (List<String>.from(p.likes)..add(uid)),
+          likesCount: p.likesCount + (isLiked ? -1 : 1),
         );
       }
       return p;

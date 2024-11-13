@@ -23,7 +23,6 @@ class FeedState {
     );
   }
 
-  // 초기 상태
   factory FeedState.initial() {
     return FeedState(posts: [], isLoading: false);
   }
