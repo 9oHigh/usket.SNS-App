@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/firebase_options.dart';
 import 'package:sns_app/presentation/screens/Signin/Signin_screen.dart';
+import 'package:sns_app/presentation/screens/bottom_nav_bar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
