@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "928617519450",
-    "project_id": "sns-app-8e0ac",
-    "storage_bucket": "sns-app-8e0ac.firebasestorage.app"
+    "project_number": "978516558862",
+    "project_id": "elice-project2-team1",
+    "storage_bucket": "elice-project2-team1.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:928617519450:android:0e46f56d90c7471209fb63",
+        "mobilesdk_app_id": "1:978516558862:android:7e8dab3c0615fcfe20285f",
         "android_client_info": {
           "package_name": "com.example.sns_app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAFxcWbZpO40Hs5GGCmOYleFcIX_BT6dV0"
+          "current_key": "AIzaSyAbPztAWY12kJ-GHuxvBrqXCDq31dORyLc"
         }
       ],
       "services": {
