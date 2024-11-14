@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAFxcWbZpO40Hs5GGCmOYleFcIX_BT6dV0',
-    appId: '1:928617519450:android:0e46f56d90c7471209fb63',
-    messagingSenderId: '928617519450',
-    projectId: 'sns-app-8e0ac',
-    storageBucket: 'sns-app-8e0ac.firebasestorage.app',
+    apiKey: 'AIzaSyAbPztAWY12kJ-GHuxvBrqXCDq31dORyLc',
+    appId: '1:978516558862:android:7e8dab3c0615fcfe20285f',
+    messagingSenderId: '978516558862',
+    projectId: 'elice-project2-team1',
+    storageBucket: 'elice-project2-team1.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCrRtlDUL40Q3-psC7qqf7tlie7YbxG5BM',
-    appId: '1:928617519450:ios:23e8aa1a956235f509fb63',
-    messagingSenderId: '928617519450',
-    projectId: 'sns-app-8e0ac',
-    storageBucket: 'sns-app-8e0ac.firebasestorage.app',
+    apiKey: 'AIzaSyBI_trRzYYo-zvXrxUPRJyCr8hf9x7qhYY',
+    appId: '1:978516558862:ios:0db8c62a6c80e21e20285f',
+    messagingSenderId: '978516558862',
+    projectId: 'elice-project2-team1',
+    storageBucket: 'elice-project2-team1.firebasestorage.app',
     iosBundleId: 'com.example.snsApp',
   );
+
 }
