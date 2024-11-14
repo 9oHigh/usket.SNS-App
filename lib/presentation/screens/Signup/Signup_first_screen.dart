@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/core/constants/sizes.dart';
-import 'package:sns_app/presentation/screens/Signup/Signup_second_screen.dart';
+import 'package:sns_app/presentation/screens/signup/Signup_second_screen.dart';
 import 'package:sns_app/presentation/widgets/label_textfield.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

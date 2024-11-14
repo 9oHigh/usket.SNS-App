@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/core/constants/sizes.dart';
-import 'package:sns_app/presentation/screens/Signup/Signup_third_screen.dart';
+import 'package:sns_app/presentation/screens/signup/Signup_third_screen.dart';
 import 'package:sns_app/presentation/widgets/custom_appbar.dart';
 import 'package:sns_app/presentation/widgets/gesture_button.dart';
 

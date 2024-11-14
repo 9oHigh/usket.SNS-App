@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sns_app/data/models/user_modle.dart';
+import 'package:sns_app/data/models/user_model.dart';
 
 class UserRepository {
   final FirebaseFirestore _firestore;

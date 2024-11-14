@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sns_app/data/models/user_modle.dart';
+import 'package:sns_app/data/models/user_model.dart';
 import 'package:sns_app/presentation/screens/profile/provider/profile_notifier_provider.dart';
 import 'package:image_picker/image_picker.dart';
 

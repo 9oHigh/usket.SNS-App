@@ -1,95 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'dart:io';
-
 import 'package:sns_app/presentation/screens/create_post/provider/create_post_notifier_provider.dart';
 
 class CreatePostScreen extends ConsumerStatefulWidget {
+  const CreatePostScreen({super.key});
+
   @override
-  _CreatePostScreenState createState() => _CreatePostScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _CreatePostScreenState();
 }
 
 class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
-  File? _image;
   final TextEditingController _captionController = TextEditingController();
-
-  Future<void> pickImage() async {
-    final pickedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      final croppedFile = await ImageCropper().cropImage(
-        sourcePath: pickedImage.path,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        uiSettings: [
-          AndroidUiSettings(
-            toolbarTitle: 'Crop Image',
-            toolbarColor: Colors.blue,
-            toolbarWidgetColor: Colors.white,
-            lockAspectRatio: true,
-          ),
-          IOSUiSettings(
-            title: 'Crop Image',
-            aspectRatioLockEnabled: true,
-          ),
-        ],
-      );
-
-      if (croppedFile != null) {
-        setState(() {
-          _image = File(croppedFile.path);
-        });
-      }
-    }
-  }
-
-  Future<void> uploadPost() async {
-    if (_image != null && _captionController.text.isNotEmpty) {
-      final createPostNotifier = ref.read(createPostNotifierProvider.notifier);
-      await createPostNotifier.uploadPost(
-        "YOUR_USER_ID",
-        "YOUR_USERNAME",
-        "YOUR_PROFILE_IMAGE_URL",
-        _captionController.text,
-        _image!,
-      );
-
-      Navigator.pop(context);
-    }
-  }
-
-  Widget imageText() {
-    if (_image == null) {
-      return Center(
-        child: Text(
-          'Pick Image',
-          style: TextStyle(color: Colors.black),
-        ),
-      );
-    } else {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Image.file(
-          _image!,
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(createPostNotifierProvider).isLoading;
+    final createPostState = ref.watch(createPostNotifierProvider);
+    final createPostNotifier = ref.read(createPostNotifierProvider.notifier);
     final screenSize = MediaQuery.of(context).size;
     final screenHeight = screenSize.height;
+
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
+        title: const Text('Create a Post'),
         backgroundColor: Colors.grey[300],
-        title: Text('Create a Post'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -99,7 +36,13 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
               height: screenHeight / 20,
             ),
             GestureDetector(
-              onTap: pickImage,
+              onTap: () async {
+                final pickedImage =
+                    await ImagePicker().pickImage(source: ImageSource.gallery);
+                if (pickedImage != null) {
+                  createPostNotifier.setImage(File(pickedImage.path));
+                }
+              },
               child: Container(
                 height: screenHeight / 5,
                 width: screenHeight / 5,
@@ -107,10 +50,25 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                   borderRadius: BorderRadius.circular(20),
                   color: Colors.white,
                 ),
-                child: imageText(),
+                child: createPostState.image == null
+                    ? const Center(
+                        child: Text(
+                          'Pick Image',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      )
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.file(
+                          createPostState.image!,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                        ),
+                      ),
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             Padding(
               padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
               child: TextField(
@@ -131,12 +89,19 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
                 ),
               ),
             ),
-            Spacer(),
-            isLoading
-                ? CircularProgressIndicator()
+            const Spacer(),
+            createPostState.isLoading
+                ? const CircularProgressIndicator()
                 : ElevatedButton(
-                    onPressed: uploadPost,
-                    child: Text('Post'),
+                    onPressed: () async {
+                      if (_captionController.text.isNotEmpty) {
+                        createPostNotifier.uploadPost(_captionController.text);
+                        Navigator.pop(context);
+                      } else {
+                        // MARK: - Alert Dialog or Snackbar
+                      }
+                    },
+                    child: const Text('Post'),
                   ),
           ],
         ),

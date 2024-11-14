@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/core/constants/sizes.dart';
-import 'package:sns_app/presentation/screens/Signup/Signup_first_screen.dart';
+import 'package:sns_app/presentation/screens/signup/signup_first_screen.dart';
 
 class SigninScreen extends StatelessWidget {
   SigninScreen({super.key});
