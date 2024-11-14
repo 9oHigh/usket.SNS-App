@@ -1,42 +1,34 @@
 import 'dart:io';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sns_app/data/models/post_model.dart';
+import 'package:sns_app/core/di/injector.dart';
+import 'package:sns_app/domain/usecases/create_post/create_post_local_usecase.dart';
+import 'package:sns_app/domain/usecases/create_post/create_post_remote_usecase.dart';
 import 'package:sns_app/presentation/screens/create_post/provider/state/create_post_state.dart';
 
 class CreatePostNotifier extends StateNotifier<CreatePostState> {
-  CreatePostNotifier() : super(CreatePostState.initial());
+  final CreatePostLocalUsecase _localUsecase =
+      injector.get<CreatePostLocalUsecase>();
+  final CreatePostRemoteUsecase _remoteUsecase =
+      injector.get<CreatePostRemoteUsecase>();
+  // 로그인 초기에 DB에 저장해서 사용해주세용
+  final userId = FirebaseAuth.instance.currentUser?.uid ?? "";
 
-  Future<void> uploadPost(String uid, String username, String profileImageUrl,
-      String caption, File imageFile) async {
+  CreatePostNotifier() : super(CreatePostState());
+
+  void setImage(File image) {
+    state = state.copyWith(image: image);
+  }
+
+  Future<void> uploadPost(String content) async {
+    final DateTime createdAt = DateTime.now();
+    final File? imageFile = state.image;
+
     state = state.copyWith(isLoading: true);
-
+    
     try {
-      final postId = FirebaseFirestore.instance.collection('posts').doc().id;
-      final imageUrl = await FirebaseStorage.instance
-          .ref('posts/$postId.jpg')
-          .putFile(imageFile)
-          .then((snapshot) => snapshot.ref.getDownloadURL());
-
-      final post = PostModel(
-        postId: postId,
-        uid: uid,
-        username: username,
-        profileImageUrl: profileImageUrl,
-        imageUrl: imageUrl,
-        caption: caption,
-        likesCount: 0,
-        likes: [],
-        createdAt: Timestamp.now(),
-      );
-
-      await FirebaseFirestore.instance
-          .collection('posts')
-          .doc(postId)
-          .set(post.toJson());
-
+      await _localUsecase.createPost(content, imageFile, createdAt);
+      await _remoteUsecase.createPost(content, imageFile, createdAt);
       state = state.copyWith(isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
