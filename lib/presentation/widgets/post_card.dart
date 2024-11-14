@@ -20,11 +20,25 @@ class PostCard extends ConsumerWidget {
           ListTile(
             leading: CircleAvatar(
               backgroundImage: NetworkImage(post.profileImageUrl),
+              onBackgroundImageError: (error, stackTrace) {
+                // 프로필 이미지 로딩 실패 시 대체 아이콘 표시
+              },
+              child: Icon(Icons.account_circle, color: Colors.grey), // 대체 아이콘
             ),
             title: Text(post.username),
             trailing: Icon(Icons.more_vert),
           ),
-          Image.network(post.imageUrl),
+          Image.network(
+            post.imageUrl,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Icon(
+                Icons.broken_image,
+                size: 100,
+                color: Colors.grey,
+              ); // 게시물 이미지 로딩 실패 시 대체 아이콘 표시
+            },
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(post.caption),
