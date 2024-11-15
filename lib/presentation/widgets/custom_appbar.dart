@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppbar({super.key, required this.titleText});
+  const CustomAppbar(
+      {super.key,
+      required this.titleText,
+      this.leading = false,
+      this.leadingEvent});
 
-  final titleText;
+  final String titleText;
+  final bool leading;
+  final VoidCallback? leadingEvent;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -12,10 +18,16 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.transparent,
-      title: const Row(
+      leading: leading
+          ? GestureDetector(
+              onTap: leadingEvent,
+              child: Icon(Icons.arrow_back),
+            )
+          : null,
+      title: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Text('회원가입'),
+          Text(titleText),
         ],
       ),
       titleTextStyle: const TextStyle(

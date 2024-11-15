@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/firebase_options.dart';
-import 'package:sns_app/presentation/screens/Signin/Signin_screen.dart';
-import 'package:sns_app/presentation/screens/bottom_nav_bar.dart';
+import 'package:sns_app/presentation/routers/custom_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +18,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Flutter Demo',
       theme: ThemeData(
         // 어플리케이션 메인 컬러 정해지면 수정하기
@@ -30,7 +29,7 @@ class MyApp extends StatelessWidget {
             iconTheme: IconThemeData(color: Colors.white)),
         useMaterial3: true,
       ),
-      home: SigninScreen(),
+      routerConfig: CustomRouter.router,
     );
   }
 }

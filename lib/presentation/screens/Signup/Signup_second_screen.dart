@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/core/constants/sizes.dart';
-import 'package:sns_app/presentation/screens/Signup/Signup_third_screen.dart';
+import 'package:sns_app/presentation/screens/signup/signup_third_screen.dart';
 import 'package:sns_app/presentation/widgets/custom_appbar.dart';
 import 'package:sns_app/presentation/widgets/gesture_button.dart';
 
@@ -14,18 +15,14 @@ class SignupSecondScreen extends StatefulWidget {
 }
 
 class _SignupSecondScreenState extends State<SignupSecondScreen> {
-  final _nameController = TextEditingController();
-
-  String? _nameError;
-
-  final bool _nameDuplicated = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: main_color,
         resizeToAvoidBottomInset: false,
-        appBar: const CustomAppbar(titleText: '회원가입'),
+        appBar: CustomAppbar(
+          titleText: '회원가입',
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -72,11 +69,7 @@ class _SignupSecondScreenState extends State<SignupSecondScreen> {
                               await FirebaseAuth.instance.currentUser!.reload();
                               if (FirebaseAuth
                                   .instance.currentUser!.emailVerified) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SignupThirdScreen()));
+                                GoRouter.of(context).push('/signUpThird');
                               } else {
                                 showDialog(
                                     context: context,

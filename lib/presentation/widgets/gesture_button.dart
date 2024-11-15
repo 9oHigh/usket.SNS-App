@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:sns_app/core/constants/colors.dart';
+import 'package:sns_app/core/constants/sizes.dart';
 
 class GestureButton extends StatelessWidget {
   GestureButton(
       {super.key,
-      required this.width,
-      required this.height,
+      this.width,
+      this.height,
       required this.text,
       required this.textSize,
       this.onTapEvent});
 
-  final width;
-  final height;
+  final double? width;
+  final double? height;
   final text;
   final textSize;
   GestureTapCallback? onTapEvent;
@@ -21,8 +22,8 @@ class GestureButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTapEvent,
       child: Container(
-        width: width,
-        height: height,
+        width: width ?? getWidth(context),
+        height: height ?? getHeight(context),
         decoration: BoxDecoration(
           color: main_color,
           borderRadius: BorderRadius.circular(15),
