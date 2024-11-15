@@ -4,14 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/core/di/injector.dart';
 import 'package:sns_app/firebase_options.dart';
-import 'package:sns_app/presentation/screens/feed/feed_screen.dart';
-import 'package:sns_app/presentation/screens/signin/signin_screen.dart';
-import 'package:sns_app/presentation/widgets/bottom_nav_bar.dart';
 import 'package:sns_app/presentation/routers/custom_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await provideDatabases();
   provideDataSources();
   provideRepositories();

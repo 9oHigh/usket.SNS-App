@@ -4,11 +4,17 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppbar(
       {super.key,
       required this.titleText,
+      this.titleAlign = MainAxisAlignment.end,
+      this.titleColor = Colors.white,
       this.leading = false,
+      this.leadingColor = Colors.white,
       this.leadingEvent});
 
   final String titleText;
+  final MainAxisAlignment titleAlign;
+  final Color titleColor;
   final bool leading;
+  final Color leadingColor;
   final VoidCallback? leadingEvent;
 
   @override
@@ -21,17 +27,17 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
       leading: leading
           ? GestureDetector(
               onTap: leadingEvent,
-              child: Icon(Icons.arrow_back),
+              child: Icon(Icons.arrow_back, color: leadingColor),
             )
           : null,
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: titleAlign,
         children: [
           Text(titleText),
         ],
       ),
-      titleTextStyle: const TextStyle(
-          color: Colors.white, fontSize: 34, fontWeight: FontWeight.bold),
+      titleTextStyle: TextStyle(
+          color: titleColor, fontSize: 34, fontWeight: FontWeight.bold),
     );
   }
 }

@@ -49,4 +49,8 @@ class FeedNotifier extends StateNotifier<FeedState> {
 
     state = state.copyWith(posts: updatedPosts);
   }
+
+  void updateBottomNavIndex(int index) {
+    state = state.copyWith(bottomNavIndex: index);
+  }
 }

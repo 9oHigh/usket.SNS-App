@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/core/constants/sizes.dart';
-import 'package:sns_app/presentation/screens/signup/signup_third_screen.dart';
 import 'package:sns_app/presentation/widgets/custom_appbar.dart';
 import 'package:sns_app/presentation/widgets/gesture_button.dart';
 
