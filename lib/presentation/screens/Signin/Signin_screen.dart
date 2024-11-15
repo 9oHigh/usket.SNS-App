@@ -6,7 +6,7 @@ import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/core/constants/sizes.dart';
 import 'package:sns_app/data/repositories/login_repository.dart';
 import 'package:sns_app/presentation/screens/Signup/Signup_first_screen.dart';
-import 'package:sns_app/presentation/screens/signin/provider/Signin_notifier_provider.dart';
+import 'package:sns_app/presentation/screens/signin/provider/signin_notifier_provider.dart';
 import 'package:sns_app/presentation/widgets/custom_appbar.dart';
 import 'package:sns_app/presentation/widgets/gesture_button.dart';
 import 'package:sns_app/presentation/widgets/label_textfield.dart';
@@ -26,7 +26,7 @@ class SigninScreen extends ConsumerWidget {
     return Scaffold(
         backgroundColor: main_color,
         resizeToAvoidBottomInset: false,
-        appBar: CustomAppbar(titleText: '로그인'),
+        appBar: const CustomAppbar(titleText: '로그인'),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
