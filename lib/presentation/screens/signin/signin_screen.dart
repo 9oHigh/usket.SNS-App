@@ -1,30 +1,32 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/core/constants/sizes.dart';
 import 'package:sns_app/presentation/screens/signup/signup_first_screen.dart';
+import 'package:sns_app/data/repositories/login_repository.dart';
+import 'package:sns_app/presentation/screens/signin/provider/signin_notifier_provider.dart';
+import 'package:sns_app/presentation/widgets/custom_appbar.dart';
+import 'package:sns_app/presentation/widgets/gesture_button.dart';
+import 'package:sns_app/presentation/widgets/label_textfield.dart';
 
-class SigninScreen extends StatelessWidget {
+class SigninScreen extends ConsumerWidget {
   SigninScreen({super.key});
+
+  final _authRepository = AuthRepository(FirebaseAuth.instance);
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sigininNotifier = ref.read(signinNotifierProvider.notifier);
+    final signinState = ref.watch(signinNotifierProvider);
     return Scaffold(
         backgroundColor: main_color,
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          title: const Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text('로그인'),
-            ],
-          ),
-          titleTextStyle: const TextStyle(
-              color: Colors.white, fontSize: 34, fontWeight: FontWeight.bold),
-        ),
+        appBar: const CustomAppbar(titleText: '로그인'),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -52,34 +54,15 @@ class SigninScreen extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('이메일'),
-                              SizedBox(
-                                height: getHeight(context) * 0.07,
-                                child: const TextField(
-                                  decoration: InputDecoration(
-                                      border: OutlineInputBorder()),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: getHeight(context) * 0.01),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text('비밀번호'),
-                              SizedBox(
-                                height: getHeight(context) * 0.07,
-                                child: const TextField(
-                                  decoration: InputDecoration(
-                                      border: OutlineInputBorder()),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: getHeight(context) * 0.01),
+                          LabelTextfield(
+                              labelText: '이메일',
+                              textfieldChanged: (value) =>
+                                  sigininNotifier.updateEmail(value)),
+                          LabelTextfield(
+                              labelText: '비밀번호',
+                              obscured: true,
+                              textfieldChanged: (value) =>
+                                  sigininNotifier.updatePassword(value)),
                           const Text('비밀번호 찾기',
                               style: TextStyle(
                                   color: main_color,
@@ -89,20 +72,18 @@ class SigninScreen extends StatelessWidget {
                       ),
                       Column(
                         children: [
-                          Container(
-                            height: getHeight(context) * 0.07,
-                            decoration: const BoxDecoration(
-                                color: main_color,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(17))),
-                            child: const Center(
-                              child: Text('로그인',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                          ),
+                          GestureButton(
+                              height: getHeight(context) * 0.07,
+                              text: '로그인',
+                              textSize: 15.0,
+                              onTapEvent: () async {
+                                User? user = await _authRepository.signIn(
+                                    signinState.email, signinState.password);
+
+                                if (user != null) {
+                                  GoRouter.of(context).go('/feed');
+                                }
+                              }),
                           SizedBox(
                             height: getHeight(context) * 0.01,
                           ),
@@ -113,11 +94,7 @@ class SigninScreen extends StatelessWidget {
                                   fontWeight: FontWeight.bold)),
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SignupFirstScreen()));
+                              GoRouter.of(context).push('/signupFirst');
                             },
                             child: const Text('회원가입',
                                 style: TextStyle(

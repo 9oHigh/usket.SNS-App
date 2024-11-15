@@ -7,6 +7,7 @@ import 'package:sns_app/firebase_options.dart';
 import 'package:sns_app/presentation/screens/feed/feed_screen.dart';
 import 'package:sns_app/presentation/screens/signin/signin_screen.dart';
 import 'package:sns_app/presentation/widgets/bottom_nav_bar.dart';
+import 'package:sns_app/presentation/routers/custom_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Flutter Demo',
       theme: ThemeData(
         // 어플리케이션 메인 컬러 정해지면 수정하기
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
             iconTheme: IconThemeData(color: Colors.white)),
         useMaterial3: true,
       ),
-      home: BottomNavBar(),
+      routerConfig: CustomRouter.router,
     );
   }
 }

@@ -4,13 +4,11 @@ import 'package:sns_app/core/constants/sizes.dart';
 class LabelTextfield extends StatelessWidget {
   LabelTextfield(
       {super.key,
-      required this.controller,
       required this.labelText,
       this.errorText,
       this.obscured,
       this.textfieldChanged});
 
-  TextEditingController controller;
   String labelText;
   String? errorText;
   bool? obscured;
@@ -29,7 +27,8 @@ class LabelTextfield extends StatelessWidget {
             obscureText: obscured ?? false,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
-              errorText: errorText,
+              errorText:
+                  errorText == '통과' || errorText == '' ? null : errorText,
               isDense: true,
             ),
           ),
