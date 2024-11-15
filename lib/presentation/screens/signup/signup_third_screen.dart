@@ -1,10 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/core/constants/sizes.dart';
-import 'package:sns_app/presentation/screens/signin/signin_screen.dart';
 import 'package:sns_app/presentation/screens/signup/provider/signup_notifier_provider.dart';
 import 'package:sns_app/presentation/widgets/label_textfield.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

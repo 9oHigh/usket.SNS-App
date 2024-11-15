@@ -16,6 +16,6 @@ class CustomRouter {
     GoRoute(
         path: "/signUpThird", builder: (_, __) => const SignupThirdScreen()),
     GoRoute(path: "/feed", builder: (_, __) => FeedScreen()),
-    GoRoute(path: "/createPost", builder: (_, __) => CreatePostScreen()),
+    GoRoute(path: "/createPost", builder: (_, __) => const CreatePostScreen()),
   ]);
 }
