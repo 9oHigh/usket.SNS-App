@@ -68,7 +68,7 @@ class _SignupSecondScreenState extends State<SignupSecondScreen> {
                               await FirebaseAuth.instance.currentUser!.reload();
                               if (FirebaseAuth
                                   .instance.currentUser!.emailVerified) {
-                                GoRouter.of(context).push('/signUpThird');
+                                context.push('/signUpThird');
                               } else {
                                 showDialog(
                                     context: context,

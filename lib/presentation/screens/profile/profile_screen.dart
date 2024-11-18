@@ -6,7 +6,7 @@ import 'package:sns_app/presentation/screens/profile/provider/profile_notifier_p
 class ProfileScreen extends ConsumerWidget {
   final String userId;
 
-  ProfileScreen({required this.userId});
+  const ProfileScreen({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -21,10 +21,10 @@ class ProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: const Text('Profile'),
       ),
       body: profileState.isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : profileState.error.isNotEmpty
               ? Center(child: Text(profileState.error))
               : profileState.user != null
@@ -35,17 +35,17 @@ class ProfileScreen extends ConsumerWidget {
                               NetworkImage(profileState.user!.profileImageUrl),
                           radius: 50,
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Text(
                           profileState.user!.username,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Text(profileState.user!.bio),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -53,41 +53,41 @@ class ProfileScreen extends ConsumerWidget {
                               children: [
                                 Text(
                                   profileState.user!.posts.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Text("Posts"),
+                                const Text("Posts"),
                               ],
                             ),
                             Column(
                               children: [
                                 Text(
                                   profileState.user!.followers.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Text("Followers"),
+                                const Text("Followers"),
                               ],
                             ),
                             Column(
                               children: [
                                 Text(
                                   profileState.user!.following.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Text("Following"),
+                                const Text("Following"),
                               ],
                             ),
                           ],
                         ),
-                        SizedBox(height: 32),
+                        const SizedBox(height: 32),
                         ElevatedButton(
                           onPressed: () {
                             Navigator.push(
@@ -98,11 +98,12 @@ class ProfileScreen extends ConsumerWidget {
                               ),
                             );
                           },
-                          child: Text('Edit Profile'),
+                          child: const Text('Edit Profile'),
                         ),
                       ],
                     )
-                  : Center(child: Text("No profile information available")),
+                  : const Center(
+                      child: Text("No profile information available")),
     );
   }
 }

@@ -26,7 +26,7 @@ class SignupFirstScreen extends ConsumerWidget {
             if (FirebaseAuth.instance.currentUser != null) {
               await FirebaseAuth.instance.currentUser!.delete();
             }
-            GoRouter.of(context).pop();
+            context.pop();
           },
         ),
         body: Column(
@@ -99,7 +99,7 @@ class SignupFirstScreen extends ConsumerWidget {
                                         password: signupState.password);
                                 await FirebaseAuth.instance.currentUser!
                                     .sendEmailVerification();
-                                GoRouter.of(context).push("/signUpSecond");
+                                context.push('/signUpSecond');
                               }
                             },
                             child: Container(

@@ -82,7 +82,7 @@ class SignupThirdScreen extends ConsumerWidget {
                                 } catch (e) {
                                   print(e.toString());
                                 }
-                                GoRouter.of(context).go('/signin');
+                                context.go('/signin');
                               }
                             },
                             child: Container(

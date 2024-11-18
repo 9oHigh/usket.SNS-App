@@ -80,7 +80,7 @@ class SigninScreen extends ConsumerWidget {
                                     signinState.email, signinState.password);
 
                                 if (user != null) {
-                                  GoRouter.of(context).go('/feed');
+                                  context.go('/app');
                                 }
                               }),
                           SizedBox(
@@ -93,7 +93,7 @@ class SigninScreen extends ConsumerWidget {
                                   fontWeight: FontWeight.bold)),
                           GestureDetector(
                             onTap: () {
-                              GoRouter.of(context).push('/signupFirst');
+                              context.push('/signupFirst');
                             },
                             child: const Text('회원가입',
                                 style: TextStyle(
