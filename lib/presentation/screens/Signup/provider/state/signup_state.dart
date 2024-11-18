@@ -3,20 +3,22 @@ class SignupState {
   final String password;
   final String rePassword;
   final String name;
-  final String emailError;
-  final String passwordError;
-  final String rePasswordError;
-  final String nameError;
+  final bool emailConfirm;
+  final bool passwordConfirm;
+  final bool rePasswordConfirm;
+  final bool nameConfirm;
+  final String errorMessage;
 
   SignupState({
     this.email = '',
     this.password = '',
     this.rePassword = '',
     this.name = '',
-    this.emailError = '',
-    this.passwordError = '',
-    this.rePasswordError = '',
-    this.nameError = '',
+    this.emailConfirm = false,
+    this.passwordConfirm = false,
+    this.rePasswordConfirm = false,
+    this.nameConfirm = false,
+    this.errorMessage = '',
   });
 
   SignupState copyWith({
@@ -24,20 +26,22 @@ class SignupState {
     String? password,
     String? rePassword,
     String? name,
-    String? emailError,
-    String? passwordError,
-    String? rePasswordError,
-    String? nameError,
+    bool? emailConfirm,
+    bool? passwordConfirm,
+    bool? rePasswordConfirm,
+    bool? nameConfirm,
+    String? errorMessage,
   }) {
     return SignupState(
       email: email ?? this.email,
       password: password ?? this.password,
       rePassword: rePassword ?? this.rePassword,
       name: name ?? this.name,
-      emailError: emailError ?? this.emailError,
-      passwordError: passwordError ?? this.passwordError,
-      rePasswordError: rePasswordError ?? this.rePasswordError,
-      nameError: nameError ?? this.nameError,
+      emailConfirm: emailConfirm ?? this.emailConfirm,
+      passwordConfirm: passwordConfirm ?? this.passwordConfirm,
+      rePasswordConfirm: rePasswordConfirm ?? this.rePasswordConfirm,
+      nameConfirm: nameConfirm ?? this.nameConfirm,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 }

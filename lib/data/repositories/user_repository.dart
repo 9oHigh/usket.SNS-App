@@ -8,7 +8,7 @@ class UserRepository {
 
   Future<void> createUser(User user) async {
     try {
-      await _firestore.collection('users').doc(user.id).set(user.toJson());
+      await _firestore.collection('users').doc(user.uid).set(user.toJson());
     } catch (e) {
       print("Error creating user: $e");
     }

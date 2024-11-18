@@ -3,6 +3,6 @@ import 'package:sns_app/presentation/screens/signup/provider/state/signup_notifi
 import 'package:sns_app/presentation/screens/signup/provider/state/signup_state.dart';
 
 final signupNotifierProvider =
-    StateNotifierProvider<SignupNotifier, SignupState>(
+    AutoDisposeStateNotifierProvider<SignupNotifier, SignupState>(
   (ref) => SignupNotifier(),
 );
