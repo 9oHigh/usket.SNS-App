@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/core/di/injector.dart';
+import 'package:sns_app/core/router/router.dart';
 import 'package:sns_app/firebase_options.dart';
 import 'package:sns_app/presentation/routers/custom_router.dart';
 
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
             iconTheme: IconThemeData(color: Colors.white)),
         useMaterial3: true,
       ),
-      routerConfig: CustomRouter.router,
+      routerConfig: router,
     );
   }
 }

@@ -18,11 +18,6 @@ class FeedScreen extends ConsumerWidget {
     final feedState = ref.watch(feedNotifierProvider);
 
     return Scaffold(
-      appBar: const CustomAppbar(
-        titleText: 'Feed',
-        titleAlign: MainAxisAlignment.start,
-        titleColor: main_color,
-      ),
       body: feedState.isLoading
           ? const Center(child: CircularProgressIndicator())
           : feedState.error != null
@@ -34,9 +29,6 @@ class FeedScreen extends ConsumerWidget {
                     return PostCard(post: post);
                   },
                 ),
-      floatingActionButton: const CustomFloatingButton(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }
