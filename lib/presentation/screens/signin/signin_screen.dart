@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/core/constants/sizes.dart';
-import 'package:sns_app/data/repositories/login_repository.dart';
 import 'package:sns_app/presentation/screens/signin/provider/signin_notifier_provider.dart';
 import 'package:sns_app/presentation/widgets/custom_appbar.dart';
 import 'package:sns_app/presentation/widgets/gesture_button.dart';
@@ -13,8 +12,6 @@ import 'package:sns_app/presentation/widgets/label_textfield.dart';
 class SigninScreen extends ConsumerWidget {
   SigninScreen({super.key});
 
-  final _authRepository = AuthRepository(FirebaseAuth.instance);
-
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -22,10 +19,12 @@ class SigninScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final sigininNotifier = ref.read(signinNotifierProvider.notifier);
     final signinState = ref.watch(signinNotifierProvider);
+
     return Scaffold(
         backgroundColor: main_color,
         resizeToAvoidBottomInset: false,
         appBar: const CustomAppbar(titleText: '로그인'),
+        // MARK: - 앱 아이콘 같은것 상단에 하나 표시해두기
         body: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -43,15 +42,8 @@ class SigninScreen extends ConsumerWidget {
                       horizontal: getWidth(context) * 0.1,
                       vertical: getHeight(context) * 0.05),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('로그인',
-                          style: TextStyle(
-                              color: main_color,
-                              fontSize: 34,
-                              fontWeight: FontWeight.bold)),
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           LabelTextfield(
                               labelText: '이메일',
@@ -62,11 +54,6 @@ class SigninScreen extends ConsumerWidget {
                               obscured: true,
                               textfieldChanged: (value) =>
                                   sigininNotifier.updatePassword(value)),
-                          const Text('비밀번호 찾기',
-                              style: TextStyle(
-                                  color: main_color,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold))
                         ],
                       ),
                       Column(
@@ -76,31 +63,30 @@ class SigninScreen extends ConsumerWidget {
                               text: '로그인',
                               textSize: 15.0,
                               onTapEvent: () async {
-                                User? user = await _authRepository.signIn(
-                                    signinState.email, signinState.password);
-
-                                if (user != null) {
-                                  context.go('/app');
-                                }
+                                User? user = await sigininNotifier.signIn();
+                                if (user != null) context.go('/app');
                               }),
-                          SizedBox(
-                            height: getHeight(context) * 0.01,
-                          ),
-                          const Text('계정이 없으십니까?',
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold)),
-                          GestureDetector(
-                            onTap: () {
-                              context.push('/signupFirst');
-                            },
-                            child: const Text('회원가입',
-                                style: TextStyle(
-                                    color: main_color,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold)),
-                          ),
+                          SizedBox(height: getHeight(context) * 0.01),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('계정이 없으십니까?',
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold)),
+                              GestureDetector(
+                                onTap: () {
+                                  context.push('/signupFirst');
+                                },
+                                child: const Text('회원가입',
+                                    style: TextStyle(
+                                        color: main_color,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                            ],
+                          )
                         ],
                       )
                     ],

@@ -3,37 +3,54 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sns_app/data/datasources/create_post/create_post_local_datasource.dart';
 import 'package:sns_app/data/datasources/create_post/create_post_remote_datasource.dart';
+import 'package:sns_app/data/datasources/signin/signin_datasource.dart';
 import 'package:sns_app/data/repositories/creat_post/create_post_local_repository_impl.dart';
 import 'package:sns_app/data/repositories/creat_post/create_post_remote_repository_impl.dart';
+import 'package:sns_app/data/repositories/signin/signin_repository_impl.dart';
 import 'package:sns_app/domain/repositories/create_post/create_post_local_repository.dart';
 import 'package:sns_app/domain/repositories/create_post/create_post_remote_repository.dart';
+import 'package:sns_app/domain/repositories/signin/signin_repository.dart';
 import 'package:sns_app/domain/usecases/create_post/create_post_local_usecase.dart';
 import 'package:sns_app/domain/usecases/create_post/create_post_remote_usecase.dart';
+import 'package:sns_app/domain/usecases/signin/signin_usecase.dart';
 import 'package:sqflite/sqflite.dart';
 
 final injector = GetIt.instance;
 
 void provideDataSources() {
+  // Create Post
   injector.registerFactory<CreatePostLocalDatasource>(
       () => CreatePostLocalDatasource());
-      injector.registerFactory<CreatePostRemoteDatasource>(
+  injector.registerFactory<CreatePostRemoteDatasource>(
       () => CreatePostRemoteDatasource());
+  // SignIn
+  injector.registerFactory<SigninDatasource>(() => SigninDatasource());
 }
 
 void provideRepositories() {
+  // Create Post
   injector.registerFactory<CreatePostLocalRepository>(() =>
       CreatePostLocalRepositoryImpl(injector.get<CreatePostLocalDatasource>()));
-      injector.registerFactory<CreatePostRemoteRepository>(() =>
-      CreatePostRemoteRepositoryImpl(injector.get<CreatePostRemoteDatasource>()));
+  injector.registerFactory<CreatePostRemoteRepository>(() =>
+      CreatePostRemoteRepositoryImpl(
+          injector.get<CreatePostRemoteDatasource>()));
+  // SignIn
+  injector.registerFactory<SigninRepository>(
+      () => SigninRepositoryImpl(injector.get<SigninDatasource>()));
 }
 
 void provideUseCases() {
+  // Create Post
   injector.registerFactory<CreatePostLocalUsecase>(
       () => CreatePostLocalUsecase(injector.get<CreatePostLocalRepository>()));
-  injector.registerFactory<CreatePostRemoteUsecase>(
-      () => CreatePostRemoteUsecase(injector.get<CreatePostRemoteRepository>()));
+  injector.registerFactory<CreatePostRemoteUsecase>(() =>
+      CreatePostRemoteUsecase(injector.get<CreatePostRemoteRepository>()));
+  // SignIn
+  injector.registerFactory<SigninUsecase>(
+      () => SigninUsecase(injector.get<SigninRepository>()));
 }
 
+// Create Post
 Future<void> provideDatabases() async {
   final directory = await getApplicationDocumentsDirectory();
   const String dbName = "sns_app.db";

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:sns_app/core/constants/sizes.dart';
 
 class LabelTextfield extends StatelessWidget {
-  LabelTextfield(
-      {super.key,
-      required this.labelText,
-      this.errorText,
-      this.obscured,
-      this.textfieldChanged});
+  LabelTextfield({
+    super.key,
+    required this.labelText,
+    this.errorText,
+    this.obscured,
+    this.textfieldChanged,
+  });
 
   String labelText;
   String? errorText;
