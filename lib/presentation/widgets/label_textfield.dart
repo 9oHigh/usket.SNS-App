@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:sns_app/core/constants/sizes.dart';
 
 class LabelTextfield extends StatelessWidget {
-  LabelTextfield(
-      {super.key,
-      required this.labelText,
-      this.errorText,
-      this.obscured,
-      this.textfieldChanged});
+  LabelTextfield({
+    super.key,
+    required this.labelText,
+    this.errorText,
+    this.obscured,
+    this.textfieldChanged,
+  });
 
   String labelText;
   String? errorText;
@@ -20,16 +21,13 @@ class LabelTextfield extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(labelText),
+        const SizedBox(height: 4),
         SizedBox(
-          height: getHeight(context) * 0.1,
           child: TextFormField(
             onChanged: textfieldChanged,
             obscureText: obscured ?? false,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              errorText:
-                  errorText == '통과' || errorText == '' ? null : errorText,
-              isDense: true,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
             ),
           ),
         ),
