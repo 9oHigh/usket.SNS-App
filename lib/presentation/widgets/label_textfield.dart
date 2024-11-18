@@ -21,16 +21,13 @@ class LabelTextfield extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(labelText),
+        const SizedBox(height: 4),
         SizedBox(
-          height: getHeight(context) * 0.1,
           child: TextFormField(
             onChanged: textfieldChanged,
             obscureText: obscured ?? false,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              errorText:
-                  errorText == '통과' || errorText == '' ? null : errorText,
-              isDense: true,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
             ),
           ),
         ),
