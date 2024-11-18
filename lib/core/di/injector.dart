@@ -4,15 +4,19 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sns_app/data/datasources/create_post/create_post_local_datasource.dart';
 import 'package:sns_app/data/datasources/create_post/create_post_remote_datasource.dart';
 import 'package:sns_app/data/datasources/signin/signin_datasource.dart';
+import 'package:sns_app/data/datasources/signup/signup_datasource.dart';
 import 'package:sns_app/data/repositories/creat_post/create_post_local_repository_impl.dart';
 import 'package:sns_app/data/repositories/creat_post/create_post_remote_repository_impl.dart';
 import 'package:sns_app/data/repositories/signin/signin_repository_impl.dart';
+import 'package:sns_app/data/repositories/signup/signup_repository_impl.dart';
 import 'package:sns_app/domain/repositories/create_post/create_post_local_repository.dart';
 import 'package:sns_app/domain/repositories/create_post/create_post_remote_repository.dart';
 import 'package:sns_app/domain/repositories/signin/signin_repository.dart';
+import 'package:sns_app/domain/repositories/signup/signup_repository.dart';
 import 'package:sns_app/domain/usecases/create_post/create_post_local_usecase.dart';
 import 'package:sns_app/domain/usecases/create_post/create_post_remote_usecase.dart';
 import 'package:sns_app/domain/usecases/signin/signin_usecase.dart';
+import 'package:sns_app/domain/usecases/signup/signup_usecase.dart';
 import 'package:sqflite/sqflite.dart';
 
 final injector = GetIt.instance;
@@ -25,6 +29,8 @@ void provideDataSources() {
       () => CreatePostRemoteDatasource());
   // SignIn
   injector.registerFactory<SigninDatasource>(() => SigninDatasource());
+  // SignUp
+  injector.registerFactory<SignupDatasource>(() => SignupDatasource());
 }
 
 void provideRepositories() {
@@ -37,6 +43,9 @@ void provideRepositories() {
   // SignIn
   injector.registerFactory<SigninRepository>(
       () => SigninRepositoryImpl(injector.get<SigninDatasource>()));
+  // SignUp
+  injector.registerFactory<SignupRepository>(
+      () => SignupRepositoryImpl(injector.get<SignupDatasource>()));
 }
 
 void provideUseCases() {
@@ -48,6 +57,9 @@ void provideUseCases() {
   // SignIn
   injector.registerFactory<SigninUsecase>(
       () => SigninUsecase(injector.get<SigninRepository>()));
+  // SignUp
+  injector.registerFactory<SignupUsecase>(
+      () => SignupUsecase(injector.get<SignupRepository>()));
 }
 
 // Create Post

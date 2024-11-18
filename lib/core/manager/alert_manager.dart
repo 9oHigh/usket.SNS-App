@@ -3,7 +3,8 @@ import 'package:sns_app/core/constants/colors.dart';
 
 class AlertManager {
   static void showCheckDialog(
-      BuildContext context, String title, String content) {
+      BuildContext context, String title, String content,
+      {VoidCallback? callback}) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -29,9 +30,14 @@ class AlertManager {
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: main_color),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    if (callback != null) {
+                      callback();
+                    }
+                    Navigator.pop(context);
+                  },
                   child:
-                      const Text("확인", style: TextStyle(color: Colors.black)),
+                      const Text("확인", style: TextStyle(color: Colors.white)),
                 ),
               ),
             ],

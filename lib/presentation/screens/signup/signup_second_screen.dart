@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/core/constants/sizes.dart';
+import 'package:sns_app/core/manager/alert_manager.dart';
 import 'package:sns_app/presentation/widgets/custom_appbar.dart';
-import 'package:sns_app/presentation/widgets/gesture_button.dart';
 
 class SignupSecondScreen extends StatefulWidget {
   const SignupSecondScreen({super.key});
@@ -41,13 +41,9 @@ class _SignupSecondScreenState extends State<SignupSecondScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('회원가입',
-                          style: TextStyle(
-                              color: main_color,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold)),
                       const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text('E-MAIL이 전송되었습니다.',
                               style: TextStyle(
@@ -65,35 +61,14 @@ class _SignupSecondScreenState extends State<SignupSecondScreen> {
                         children: [
                           GestureDetector(
                             onTap: () async {
-                              await FirebaseAuth.instance.currentUser!.reload();
+                              await FirebaseAuth.instance.currentUser?.reload();
                               if (FirebaseAuth
-                                  .instance.currentUser!.emailVerified) {
+                                      .instance.currentUser?.emailVerified ??
+                                  false) {
                                 context.push('/signUpThird');
                               } else {
-                                showDialog(
-                                    context: context,
-                                    builder: (dialogContext) {
-                                      return AlertDialog(
-                                        content: const Text('이메일 인증이 되지않았습니다.',
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold)),
-                                        actionsAlignment:
-                                            MainAxisAlignment.center,
-                                        actions: [
-                                          GestureButton(
-                                            width: getWidth(context) * 0.15,
-                                            height: getHeight(context) * 0.05,
-                                            text: "확인",
-                                            textSize: 15.0,
-                                            onTapEvent: () {
-                                              Navigator.pop(dialogContext);
-                                            },
-                                          )
-                                        ],
-                                      );
-                                    });
+                                AlertManager.showCheckDialog(context, "인증 오류",
+                                    "이메일 인증이 완료되지 않았습니다.\n이메일을 확인해주세요.");
                               }
                             },
                             child: Container(
