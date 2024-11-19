@@ -15,7 +15,6 @@ class AppScreen extends ConsumerStatefulWidget {
 }
 
 class _AppScreenState extends ConsumerState<AppScreen> {
-
   final List<Widget> screens = [
     const FeedScreen(),
     const ProfileScreen(userId: ""),
@@ -23,13 +22,36 @@ class _AppScreenState extends ConsumerState<AppScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(appNotifierProvider);
+    final appState = ref.watch(appNotifierProvider);
+
     return Scaffold(
       appBar: AppBar(
-          title: const Text("SNS",
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: main_color))),
-      body: screens[state.bottomNavIndex],
+        title: const Text(
+          "Hwi's SNS",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                // MARK: - 알림 화면 이동
+              },
+              icon: Badge(
+                isLabelVisible: appState.notificationCount > 0 ? true : false,
+                label: Text("${appState.notificationCount}"),
+                offset: const Offset(8, 8),
+                backgroundColor: Colors.red,
+                child: const Icon(
+                  Icons.notifications,
+                  size: 24,
+                ),
+              )),
+        ],
+        backgroundColor: main_color,
+      ),
+      body: screens[appState.bottomNavIndex],
       floatingActionButton: const CreatePostFloatingButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: const BottomNavBar(),
