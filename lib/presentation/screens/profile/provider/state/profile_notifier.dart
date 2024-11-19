@@ -1,40 +1,75 @@
+import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sns_app/data/models/user_model.dart';
+import 'package:sns_app/data/repositories/user_repository.dart';
 import 'profile_state.dart';
 
 class ProfileNotifier extends StateNotifier<ProfileState> {
-  ProfileNotifier() : super(ProfileState());
+  final UserRepository userRepository;
 
-  Future<void> loadUserProfile(String userId) async {
-    state = state.copyWith(isLoading: true, error: '');
+  ProfileNotifier(this.userRepository) : super(ProfileState(isLoading: true)) {
+    loadUser();
+  }
+
+  Future<String?> _getCurrentUserId() async {
+    final user = FirebaseAuth.instance.currentUser;
+    return user?.uid;
+  }
+
+  Future<void> loadUser() async {
     try {
-      await Future.delayed(Duration(seconds: 2));
-
-      User exampleUser = User(
-        id: userId,
-        username: "john_doe",
-        profileImageUrl: "https://example.com/profile.jpg",
-        bio: "Flutter developer and tech enthusiast.",
-        followers: 1200,
-        following: 300,
-        posts: 45,
-        email: 'john_doe@example.com',
-      );
-
-      state = state.copyWith(user: exampleUser, isLoading: false);
+      state = state.copyWith(isLoading: true);
+      final uid = await _getCurrentUserId();
+      if (uid == null) {
+        print('No logged-in user.');
+        state = state.copyWith(isLoading: false);
+        return;
+      }
+      final user = await userRepository.getUserById(uid);
+      if (user != null) {
+        print('User loaded: $user');
+        state = state.copyWith(user: user, isLoading: false);
+      } else {
+        print('User not found in Firestore.');
+        state = state.copyWith(isLoading: false);
+      }
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: "Failed to load profile");
+      print('Error loading user: $e');
+      state = state.copyWith(isLoading: false);
     }
   }
 
-  Future<void> updateUserProfile(
-      String newUsername, String newProfileImageUrl) async {
-    if (state.user != null) {
-      User updatedUser = state.user!.copyWith(
-        username: newUsername,
-        profileImageUrl: newProfileImageUrl,
+  Future<void> updateProfile({
+    String? nickname,
+    String? bio,
+    File? imageFile,
+  }) async {
+    try {
+      state = state.copyWith(isLoading: true);
+      final user = state.user;
+
+      if (user == null) return;
+
+      String? imageUrl = user.profileImageUrl;
+
+      if (imageFile != null) {
+        final storageRef =
+            FirebaseStorage.instance.ref().child('profile_images/${user.uid}');
+        await storageRef.putFile(imageFile);
+        imageUrl = await storageRef.getDownloadURL();
+      }
+      final updatedUser = user.copyWith(
+        nickname: nickname ?? user.nickname,
+        bio: bio ?? user.bio,
+        profileImageUrl: imageUrl,
       );
-      state = state.copyWith(user: updatedUser);
+
+      await userRepository.createUser(updatedUser);
+      state = state.copyWith(user: updatedUser, isLoading: false);
+    } catch (e) {
+      print('Error updating profile: $e');
+      state = state.copyWith(isLoading: false);
     }
   }
 }

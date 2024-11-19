@@ -15,10 +15,9 @@ class AppScreen extends ConsumerStatefulWidget {
 }
 
 class _AppScreenState extends ConsumerState<AppScreen> {
-
   final List<Widget> screens = [
     const FeedScreen(),
-    const ProfileScreen(userId: ""),
+    ProfileScreen(),
   ];
 
   @override

@@ -1,47 +1,25 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sns_app/data/models/user_model.dart';
-import 'package:sns_app/presentation/screens/profile/provider/profile_notifier_provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sns_app/presentation/screens/profile/provider/profile_notifier_provider.dart';
+import 'dart:io';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
-  final User user;
-
-  EditProfileScreen({required this.user});
-
   @override
-  _EditProfileScreenState createState() => _EditProfileScreenState();
+  ConsumerState<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
-  late TextEditingController _usernameController;
-  late TextEditingController _profileImageUrlController;
-  final ImagePicker _picker = ImagePicker();
-  File? _selectedImage;
-
-  @override
-  void initState() {
-    super.initState();
-    _usernameController = TextEditingController(text: widget.user.username);
-    _profileImageUrlController =
-        TextEditingController(text: widget.user.profileImageUrl);
-  }
-
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _profileImageUrlController.dispose();
-    super.dispose();
-  }
+  final _nicknameController = TextEditingController();
+  final _bioController = TextEditingController();
+  File? _imageFile;
 
   Future<void> _pickImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
       setState(() {
-        _selectedImage = File(image.path);
-        _profileImageUrlController.text = image.path;
+        _imageFile = File(pickedFile.path);
       });
     }
   }
@@ -49,41 +27,53 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final profileNotifier = ref.read(profileNotifierProvider.notifier);
+    final profileState = ref.watch(profileNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Profile'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          color: Colors.black,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            if (_selectedImage != null)
-              CircleAvatar(
-                backgroundImage: FileImage(_selectedImage!),
+            GestureDetector(
+              onTap: _pickImage,
+              child: CircleAvatar(
                 radius: 50,
-              )
-            else
-              CircleAvatar(
-                backgroundImage: NetworkImage(widget.user.profileImageUrl),
-                radius: 50,
+                backgroundImage: _imageFile != null
+                    ? FileImage(_imageFile!)
+                    : NetworkImage(profileState.user?.profileImageUrl ?? '')
+                        as ImageProvider,
               ),
-            TextButton(
-              onPressed: _pickImage,
-              child: Text('Change Profile Picture'),
             ),
+            SizedBox(height: 16),
             TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
+              controller: _nicknameController
+                ..text = profileState.user?.nickname ?? '',
+              decoration: InputDecoration(labelText: 'Nickname'),
             ),
-            SizedBox(height: 24),
+            SizedBox(height: 16),
+            TextField(
+              controller: _bioController..text = profileState.user?.bio ?? '',
+              decoration: InputDecoration(labelText: 'Bio'),
+            ),
+            SizedBox(height: 16),
             ElevatedButton(
-              onPressed: () {
-                profileNotifier.updateUserProfile(
-                  _usernameController.text,
-                  _profileImageUrlController.text,
+              onPressed: () async {
+                await profileNotifier.updateProfile(
+                  nickname: _nicknameController.text,
+                  bio: _bioController.text,
+                  imageFile: _imageFile,
                 );
-                Navigator.pop(context);
+                Navigator.of(context).pop();
               },
               child: Text('Save Changes'),
             ),

@@ -18,7 +18,9 @@ class UserRepository {
     try {
       final doc = await _firestore.collection('users').doc(userId).get();
       if (doc.exists) {
-        return User.fromDocument(doc.data() as DocumentSnapshot<Object?>);
+        return User.fromDocument(doc);
+      } else {
+        print("Error: $doc");
       }
     } catch (e) {
       print("Error getting user: $e");
