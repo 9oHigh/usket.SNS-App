@@ -26,9 +26,10 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   Future<void> litenNotifications() async {
+    final token = await FirebaseMessaging.instance.getToken();
+    print("token: $token");
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification? notification = message.notification;
-
       if (notification != null) {
         FlutterLocalNotificationsPlugin().show(
             notification.hashCode,

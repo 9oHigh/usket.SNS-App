@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sns_app/core/constants/colors.dart';
+import 'package:sns_app/core/manager/alert_manager.dart';
 import 'package:sns_app/presentation/screens/app/provider/app_notifier_provider.dart';
 import 'package:sns_app/presentation/screens/feed/feed_screen.dart';
 import 'package:sns_app/presentation/screens/profile/profile_screen.dart';
@@ -23,6 +25,8 @@ class _AppScreenState extends ConsumerState<AppScreen> {
   @override
   Widget build(BuildContext context) {
     final appState = ref.watch(appNotifierProvider);
+
+    _requestNotificationPermission();
 
     return Scaffold(
       appBar: AppBar(
@@ -56,5 +60,16 @@ class _AppScreenState extends ConsumerState<AppScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: const BottomNavBar(),
     );
+  }
+
+  Future<void> _requestNotificationPermission() async {
+    PermissionStatus status = await Permission.notification.status;
+    if (status.isGranted) {
+      return;
+    } else if (status.isDenied || status.isPermanentlyDenied) {
+      AlertManager.showNotificationPermissionAlert(context);
+    } else {
+      await Permission.notification.request();
+    }
   }
 }
