@@ -73,15 +73,15 @@ class UserModel {
 
   factory UserModel.fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    return UserModel(
-      uid: data['uid'],
-      bio: data['bio'],
-      nickname: data['nickname'],
-      email: data['email'],
-      profileImageUrl: data['profileImageUrl'],
+    return User(
+      uid: data['uid'] ?? '',
+      bio: data['bio'] ?? '',
+      nickname: data['nickname'] ?? '',
+      profileImageUrl: data['profileImageUrl'] ?? '',
       followers: data['followers'] ?? 0,
-      followings: data['following'] ?? 0,
-      postIds: List<dynamic>.from(data['posts'] ?? []),
+      followings: data['followings'] ?? 0,
+      postIds: List<String>.from(data['postIds'] ?? []),
+      email: data['email'] ?? '',
     );
   }
 
