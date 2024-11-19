@@ -75,7 +75,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 );
                 Navigator.of(context).pop();
               },
-              child: Text('Save Changes'),
+              child: const Text('Save Changes'),
             ),
           ],
         ),

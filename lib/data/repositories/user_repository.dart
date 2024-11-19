@@ -6,7 +6,7 @@ class UserRepository {
 
   UserRepository(this._firestore);
 
-  Future<void> createUser(User user) async {
+  Future<void> createUser(UserModel user) async {
     try {
       await _firestore.collection('users').doc(user.uid).set(user.toJson());
     } catch (e) {
@@ -14,7 +14,7 @@ class UserRepository {
     }
   }
 
-  Future<User?> getUserById(String userId) async {
+  Future<UserModel?> getUserById(String userId) async {
     try {
       final doc = await _firestore.collection('users').doc(userId).get();
       if (doc.exists) {

@@ -1,9 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sns_app/data/models/user_model.dart';
 
 class AuthRepository {
   final FirebaseAuth _auth;
+  static UserModel? userInfo;
 
   AuthRepository(this._auth);
+
+  static Future<UserModel?> loginUserByUid(String uid) async {
+    var data = await FirebaseFirestore.instance
+        .collection('users')
+        .where('uid', isEqualTo: uid)
+        .get();
+
+    if (data.size == 0) {
+      return null;
+    } else {
+      return UserModel.fromJson(data.docs.first.data());
+    }
+  }
 
   // 로그인
   Future<User?> signIn(String email, String password) async {
@@ -12,6 +28,7 @@ class AuthRepository {
         email: email,
         password: password,
       );
+
       return userCredential.user;
     } catch (e) {
       print('로그인 실패: $e');

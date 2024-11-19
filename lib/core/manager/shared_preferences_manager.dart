@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 enum PrefsType {
   isLoggedIn,
   userId,
+  unReadNotificationCount,
 }
 
 extension on PrefsType {
@@ -31,6 +32,8 @@ class SharedPreferenceManager {
     switch (type) {
       case PrefsType.userId:
         return _prefs.getString(type.prefsName) as T?;
+      case PrefsType.unReadNotificationCount:
+        return _prefs.getInt(type.prefsName) as T?;
       default:
         return _prefs.getBool(type.prefsName) as T?;
     }
@@ -40,6 +43,8 @@ class SharedPreferenceManager {
     switch (type) {
       case PrefsType.userId:
         return await _prefs.setString(type.prefsName, pref as String);
+      case PrefsType.unReadNotificationCount:
+        return await _prefs.setInt(type.prefsName, pref as int);
       default:
         return await _prefs.setBool(type.prefsName, pref as bool);
     }

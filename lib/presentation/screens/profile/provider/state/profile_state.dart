@@ -1,7 +1,7 @@
 import 'package:sns_app/data/models/user_model.dart';
 
 class ProfileState {
-  final User? user;
+  final UserModel? user;
   final bool isLoading;
   final String error;
 
@@ -12,7 +12,7 @@ class ProfileState {
   });
 
   ProfileState copyWith({
-    User? user,
+    UserModel? user,
     bool? isLoading,
     String? error,
   }) {

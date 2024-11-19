@@ -7,6 +7,7 @@ class FeedNotifier extends StateNotifier<FeedState> {
   FeedNotifier() : super(FeedState.initial());
 
   Future<void> loadFeed() async {
+    print('loadFeed');
     state = state.copyWith(isLoading: true);
     try {
       final snapshot = await FirebaseFirestore.instance
@@ -14,12 +15,15 @@ class FeedNotifier extends StateNotifier<FeedState> {
           .orderBy('createdAt', descending: true)
           .get();
 
+      print(snapshot);
+
       final posts =
           snapshot.docs.map((doc) => PostModel.fromDocument(doc)).toList();
 
       state = state.copyWith(posts: posts, isLoading: false);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
+      print(e.toString());
     }
   }
 
@@ -41,7 +45,7 @@ class FeedNotifier extends StateNotifier<FeedState> {
           likes: isLiked
               ? (List<String>.from(p.likes)..remove(uid))
               : (List<String>.from(p.likes)..add(uid)),
-          likesCount: p.likesCount + (isLiked ? -1 : 1),
+          likeCount: p.likeCount + (isLiked ? -1 : 1),
         );
       }
       return p;
