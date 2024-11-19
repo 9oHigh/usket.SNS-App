@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sns_app/presentation/screens/profile/edit_profile_screen.dart';
 import 'package:sns_app/presentation/screens/profile/provider/profile_notifier_provider.dart';
 
@@ -37,7 +39,7 @@ class ProfileScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          profileState.user!.username,
+                          profileState.user!.nickname,
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -52,7 +54,7 @@ class ProfileScreen extends ConsumerWidget {
                             Column(
                               children: [
                                 Text(
-                                  profileState.user!.posts.toString(),
+                                  profileState.user!.postIds.toString(),
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -76,7 +78,7 @@ class ProfileScreen extends ConsumerWidget {
                             Column(
                               children: [
                                 Text(
-                                  profileState.user!.following.toString(),
+                                  profileState.user!.followings.toString(),
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -100,6 +102,12 @@ class ProfileScreen extends ConsumerWidget {
                           },
                           child: const Text('Edit Profile'),
                         ),
+                        ElevatedButton(
+                            onPressed: () async {
+                              await FirebaseAuth.instance.signOut();
+                              GoRouter.of(context).go('/signin');
+                            },
+                            child: const Text('로그아웃'))
                       ],
                     )
                   : const Center(

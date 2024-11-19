@@ -1,12 +1,10 @@
-import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sns_app/core/constants/colors.dart';
+import 'package:sns_app/data/models/post_model.dart';
 import 'package:sns_app/presentation/screens/feed/provider/feed_notifier_provider.dart';
-import 'package:sns_app/presentation/widgets/bottom_nav_bar.dart';
-import 'package:sns_app/presentation/widgets/custom_appbar.dart';
-import 'package:sns_app/presentation/widgets/custom_floating_button.dart';
+import 'package:sns_app/presentation/screens/signin/provider/signin_notifier_provider.dart';
 import 'package:sns_app/presentation/widgets/post_card.dart';
 
 class FeedScreen extends ConsumerWidget {
@@ -16,19 +14,23 @@ class FeedScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final feedNotifier = ref.read(feedNotifierProvider.notifier);
     final feedState = ref.watch(feedNotifierProvider);
+    final signinState = ref.watch(signinNotifierProvider);
 
     return Scaffold(
-      body: feedState.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : feedState.error != null
-              ? Center(child: Text(feedState.error!))
-              : ListView.builder(
-                  itemCount: feedState.posts.length,
-                  itemBuilder: (context, index) {
-                    final post = feedState.posts[index];
-                    return PostCard(post: post);
-                  },
-                ),
-    );
+        body: StreamBuilder(
+            stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      return PostCard(
+                          post: PostModel.fromDocument(
+                              snapshot.data!.docs[index]));
+                    });
+              } else {
+                return Container();
+              }
+            }));
   }
 }

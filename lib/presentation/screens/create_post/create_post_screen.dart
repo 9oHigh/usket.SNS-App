@@ -8,6 +8,7 @@ import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/core/constants/sizes.dart';
 import 'package:sns_app/presentation/screens/create_post/provider/create_post_notifier_provider.dart';
 import 'package:sns_app/presentation/screens/create_post/provider/state/create_post_state.dart';
+import 'package:sns_app/presentation/screens/signin/provider/signin_notifier_provider.dart';
 import 'package:sns_app/presentation/widgets/custom_appbar.dart';
 
 class CreatePostScreen extends ConsumerStatefulWidget {
@@ -20,23 +21,17 @@ class CreatePostScreen extends ConsumerStatefulWidget {
 
 class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
   @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      ref.read(createPostNotifierProvider.notifier).loadPhotos();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final createPostState = ref.watch(createPostNotifierProvider);
     final createPostNotifier = ref.read(createPostNotifierProvider.notifier);
+    final signinState = ref.watch(signinNotifierProvider);
 
     return Scaffold(
       appBar: CustomAppbar(
         leading: true,
         leadingColor: Colors.grey,
         leadingEvent: () {
+          createPostNotifier.resetState();
           GoRouter.of(context).pop();
         },
         actions: [
@@ -61,10 +56,10 @@ class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
             ? Column(
                 children: [
                   _preview(createPostState.previewImage!),
-                  _header(createPostState.headerText, createPostState,
+                  _header(createPostState.headerText!, createPostState,
                       createPostNotifier),
                   _imageSelectWidget(
-                      createPostState.imageList,
+                      createPostState.imageList!,
                       createPostState.selectedImages!,
                       createPostState,
                       createPostNotifier),

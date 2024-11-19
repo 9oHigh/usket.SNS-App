@@ -7,9 +7,9 @@ import 'package:sns_app/presentation/screens/profile/provider/profile_notifier_p
 import 'package:image_picker/image_picker.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
-  final User user;
+  final UserModel user;
 
-  EditProfileScreen({required this.user});
+  const EditProfileScreen({super.key, required this.user});
 
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
@@ -24,7 +24,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _usernameController = TextEditingController(text: widget.user.username);
+    _usernameController = TextEditingController(text: widget.user.nickname);
     _profileImageUrlController =
         TextEditingController(text: widget.user.profileImageUrl);
   }
@@ -52,7 +52,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Profile'),
+        title: const Text('Edit Profile'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -70,13 +70,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               ),
             TextButton(
               onPressed: _pickImage,
-              child: Text('Change Profile Picture'),
+              child: const Text('Change Profile Picture'),
             ),
             TextField(
               controller: _usernameController,
-              decoration: InputDecoration(labelText: 'Username'),
+              decoration: const InputDecoration(labelText: 'Username'),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
                 profileNotifier.updateUserProfile(
@@ -85,7 +85,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 );
                 Navigator.pop(context);
               },
-              child: Text('Save Changes'),
+              child: const Text('Save Changes'),
             ),
           ],
         ),

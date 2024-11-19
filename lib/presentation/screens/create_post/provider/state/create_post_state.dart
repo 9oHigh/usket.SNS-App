@@ -3,22 +3,22 @@ import 'package:photo_manager/photo_manager.dart';
 enum Mode { SINGLE, MULTI }
 
 class CreatePostState {
-  final Mode mode;
+  final Mode? mode;
   final List<AssetPathEntity>? album;
-  final List<AssetEntity> imageList;
+  final List<AssetEntity>? imageList;
   final AssetEntity? previewImage;
   final List<AssetEntity>? selectedImages;
-  final String headerText;
-  final String content;
+  final String? headerText;
+  final String? content;
 
   CreatePostState({
-    this.mode = Mode.SINGLE,
+    this.mode,
     this.album,
-    this.imageList = const [],
+    this.imageList,
     this.previewImage,
     this.selectedImages,
-    this.headerText = "",
-    this.content = "",
+    this.headerText,
+    this.content,
   });
 
   CreatePostState copyWith({
