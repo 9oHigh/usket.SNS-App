@@ -22,7 +22,7 @@ class SignupDatasource {
 
   Future<void> addUserToFirestore(String nickname, String email) async {
     final uid = _auth.currentUser!.uid;
-    final signup.User user = signup.User(
+    final signup.UserModel user = signup.UserModel(
         uid: uid,
         nickname: nickname,
         email: email,

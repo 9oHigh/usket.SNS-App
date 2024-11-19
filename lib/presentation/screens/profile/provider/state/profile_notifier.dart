@@ -8,16 +8,16 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   Future<void> loadUserProfile(String userId) async {
     state = state.copyWith(isLoading: true, error: '');
     try {
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
 
-      User exampleUser = User(
-        id: userId,
-        username: "john_doe",
+      UserModel exampleUser = UserModel(
+        uid: userId,
+        nickname: "john_doe",
         profileImageUrl: "https://example.com/profile.jpg",
         bio: "Flutter developer and tech enthusiast.",
         followers: 1200,
-        following: 300,
-        posts: 45,
+        followings: 300,
+        postIds: [],
         email: 'john_doe@example.com',
       );
 
@@ -30,8 +30,8 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   Future<void> updateUserProfile(
       String newUsername, String newProfileImageUrl) async {
     if (state.user != null) {
-      User updatedUser = state.user!.copyWith(
-        username: newUsername,
+      UserModel updatedUser = state.user!.copyWith(
+        nickname: newUsername,
         profileImageUrl: newProfileImageUrl,
       );
       state = state.copyWith(user: updatedUser);

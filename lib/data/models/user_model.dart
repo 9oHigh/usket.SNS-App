@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User {
+class UserModel {
   final String uid;
   final String bio;
   final String nickname;
@@ -8,9 +8,9 @@ class User {
   final String profileImageUrl;
   final int followers;
   final int followings;
-  final List<String> postIds;
+  final List<dynamic> postIds;
 
-  User({
+  UserModel({
     required this.uid,
     required this.bio,
     required this.nickname,
@@ -21,7 +21,7 @@ class User {
     required this.postIds,
   });
 
-  User copyWith({
+  UserModel copyWith({
     String? uid,
     String? bio,
     String? nickname,
@@ -29,9 +29,9 @@ class User {
     String? profileImageUrl,
     int? followers,
     int? followings,
-    List<String>? postIds,
+    List<dynamic>? postIds,
   }) {
-    return User(
+    return UserModel(
       uid: uid ?? this.uid,
       bio: bio ?? this.bio,
       nickname: nickname ?? this.nickname,
@@ -43,17 +43,45 @@ class User {
     );
   }
 
-  factory User.fromDocument(DocumentSnapshot doc) {
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      uid: json['uid'] == null ? '' : json['uid'] as String,
+      bio: json['bio'] == null ? '' : json['bio'] as String,
+      nickname: json['nickname'] == null ? '' : json['nickname'] as String,
+      email: json['email'] == null ? '' : json['email'] as String,
+      profileImageUrl: json['profileImageUrl'] == null
+          ? ''
+          : json['profileImageUrl'] as String,
+      followers: json['followers'] == null ? 0 : json['followers'] as int,
+      followings: json['followings'] == null ? 0 : json['followings'] as int,
+      postIds: json['postIds'] == null ? [] : json['postIds'] as List<dynamic>,
+    );
+  }
+
+  factory UserModel.init() {
+    return UserModel(
+      uid: '',
+      bio: '',
+      nickname: '',
+      email: '',
+      profileImageUrl: '',
+      followers: 0,
+      followings: 0,
+      postIds: [],
+    );
+  }
+
+  factory UserModel.fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    return User(
+    return UserModel(
       uid: data['uid'],
       bio: data['bio'],
       nickname: data['nickname'],
+      email: data['email'],
       profileImageUrl: data['profileImageUrl'],
       followers: data['followers'] ?? 0,
       followings: data['following'] ?? 0,
-      postIds: List<String>.from(data['posts'] ?? []),
-      email: data['email'],
+      postIds: List<dynamic>.from(data['posts'] ?? []),
     );
   }
 
