@@ -32,13 +32,18 @@ class SignupDatasource {
         followers: 0,
         followings: 0);
     try {
-      await _firebaseFirestore.collection('users').add(user.toJson());
+      await _firebaseFirestore
+          .collection('users')
+          .doc(user.uid)
+          .set(user.toJson());
       await _firebaseFirestore
           .collection('followers')
-          .add({"userFollowers": []});
+          .doc(user.uid)
+          .set({"userFollowers": []});
       await _firebaseFirestore
           .collection('followings')
-          .add({"userFollowings": []});
+          .doc(user.uid)
+          .set({"userFollowings": []});
     } catch (e) {
       rethrow;
     }
