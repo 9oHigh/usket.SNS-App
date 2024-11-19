@@ -47,19 +47,25 @@ class SignupThirdScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('사용하실 닉네임을 입력해주세요.',
-                            style: TextStyle(
-                                color: main_color,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold)),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            LabelTextfield(
-                              labelText: '닉네임',
-                              textfieldChanged: (value) =>
-                                  signupNotifier.updateName(value),
+                            const Text('사용하실 닉네임을 입력해주세요.',
+                                style: TextStyle(
+                                    color: main_color,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                LabelTextfield(
+                                  labelText: "",
+                                  textfieldChanged: (value) =>
+                                      signupNotifier.updateName(value),
+                                ),
+                              ],
                             ),
                           ],
                         ),
