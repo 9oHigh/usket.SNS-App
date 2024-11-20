@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:sns_app/data/models/post_model.dart';
 
 class FeedState {

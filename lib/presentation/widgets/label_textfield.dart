@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sns_app/core/constants/sizes.dart';
 
 class LabelTextfield extends StatelessWidget {
   LabelTextfield({

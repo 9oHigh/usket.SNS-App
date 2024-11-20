@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sns_app/presentation/screens/profile/provider/profile_notifier_provider.dart';
 import 'dart:io';
@@ -73,7 +74,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   bio: _bioController.text,
                   imageFile: _imageFile,
                 );
-                Navigator.of(context).pop();
+                context.push('/profile');
               },
               child: const Text('Save Changes'),
             ),

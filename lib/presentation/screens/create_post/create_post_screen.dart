@@ -1,167 +1,129 @@
-import 'dart:typed_data';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sns_app/core/constants/colors.dart';
-import 'package:sns_app/core/constants/sizes.dart';
 import 'package:sns_app/presentation/screens/create_post/provider/create_post_notifier_provider.dart';
-import 'package:sns_app/presentation/screens/create_post/provider/state/create_post_state.dart';
-import 'package:sns_app/presentation/screens/signin/provider/signin_notifier_provider.dart';
-import 'package:sns_app/presentation/widgets/custom_appbar.dart';
 
-class CreatePostScreen extends ConsumerStatefulWidget {
-  const CreatePostScreen({super.key});
-
+class CreatePostScreen extends ConsumerWidget {
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _CreatePostScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(createPostNotifierProvider);
+    final notifier = ref.read(createPostNotifierProvider.notifier);
 
-class _CreatePostScreenState extends ConsumerState<CreatePostScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final createPostState = ref.watch(createPostNotifierProvider);
-    final createPostNotifier = ref.read(createPostNotifierProvider.notifier);
-    final signinState = ref.watch(signinNotifierProvider);
+    void _showPermissionDialog(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('권한 요청'),
+          content: Text('갤러리 접근 권한이 필요합니다.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('확인'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    Future<void> _pickImage() async {
+      final status = await Permission.photos.request();
+
+      if (!status.isGranted) {
+        _showPermissionDialog(context);
+        return;
+      }
+
+      final picker = ImagePicker();
+      final image = await picker.pickImage(source: ImageSource.gallery);
+
+      if (image != null) {
+        notifier.updateSelectedImage(File(image.path));
+      }
+    }
+
+    void _handleUpload() async {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+
+      try {
+        await notifier.uploadPost();
+
+        context.pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('게시물이 업로드되었습니다!')),
+        );
+      } catch (e) {
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('업로드에 실패했습니다: $e')),
+        );
+      } finally {
+        Navigator.of(context).pop();
+      }
+    }
 
     return Scaffold(
-      appBar: CustomAppbar(
-        leading: true,
-        leadingColor: Colors.grey,
-        leadingEvent: () {
-          createPostNotifier.resetState();
-          GoRouter.of(context).pop();
-        },
+      appBar: AppBar(
+        backgroundColor: main_color,
+        title: Text('게시물 작성'),
+        titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
         actions: [
-          GestureDetector(
-              onTap: () {
-                GoRouter.of(context).push('/createPostSecond');
-              },
-              child: Padding(
-                padding: EdgeInsets.only(right: getWidth(context) * 0.05),
-                child: const Text('다음',
-                    style: TextStyle(color: main_color, fontSize: 20)),
-              ))
-        ],
-        titleText: 'New Post',
-        titleAlign: MainAxisAlignment.center,
-        titleColor: main_color,
-      ),
-      body: SingleChildScrollView(
-          child: Center(
-        child: createPostState.album != null &&
-                createPostState.previewImage != null
-            ? Column(
-                children: [
-                  _preview(createPostState.previewImage!),
-                  _header(createPostState.headerText!, createPostState,
-                      createPostNotifier),
-                  _imageSelectWidget(
-                      createPostState.imageList!,
-                      createPostState.selectedImages!,
-                      createPostState,
-                      createPostNotifier),
-                ],
-              )
-            : const CircularProgressIndicator(),
-      )),
-    );
-  }
-
-  Widget _preview(AssetEntity asset) {
-    return SizedBox(
-      width: getWidth(context),
-      height: getWidth(context),
-      child: _photoWidget(asset, getWidth(context).toInt(), builder: (data) {
-        return Image.memory(data, fit: BoxFit.cover);
-      }),
-    );
-  }
-
-  Widget _header(
-      String headerText, CreatePostState createPostState, createPostNotifier) {
-    return Padding(
-        padding: EdgeInsets.symmetric(
-            horizontal: getWidth(context) * 0.05,
-            vertical: getHeight(context) * 0.01),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Row(
-            children: [
-              Text(headerText, style: const TextStyle(fontSize: 20)),
-              const Icon(Icons.arrow_drop_down),
-            ],
+          TextButton(
+            onPressed: _handleUpload,
+            child: Text('완료', style: TextStyle(color: Colors.white)),
           ),
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  createPostNotifier.updateMode(createPostState.mode);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: createPostState.mode == Mode.SINGLE
-                          ? sub_color
-                          : main_color),
-                  child: const Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Icon(
-                      Icons.copy,
-                      color: Colors.white,
-                      size: 16,
-                    ),
-                  ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: _pickImage,
+              child: Container(
+                height: 200,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(8),
+                  image: state.selectedImage != null
+                      ? DecorationImage(
+                          image: FileImage(state.selectedImage!),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
                 ),
-              )
-            ],
-          )
-        ]));
-  }
-
-  Widget _imageSelectWidget(
-      List<AssetEntity> imageList,
-      List<AssetEntity> selectedImages,
-      CreatePostState createPostState,
-      createPostNotifier) {
-    return GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            childAspectRatio: 1,
-            mainAxisSpacing: 1,
-            crossAxisSpacing: 1),
-        itemCount: imageList.length,
-        itemBuilder: (context, index) {
-          return _photoWidget(imageList[index], (getWidth(context) / 4).toInt(),
-              builder: (data) {
-            return GestureDetector(
-              onTap: () {
-                createPostState.mode == Mode.SINGLE
-                    ? createPostNotifier.updatePreviewImage(imageList[index])
-                    : createPostNotifier.updateSelectImages(imageList[index]);
-              },
-              child: Opacity(
-                  opacity: selectedImages.contains(imageList[index]) ? 0.3 : 1,
-                  child: Image.memory(data, fit: BoxFit.cover)),
-            );
-          });
-        });
-  }
-
-  Widget _photoWidget(AssetEntity asset, int size,
-      {required Widget Function(Uint8List) builder}) {
-    return FutureBuilder(
-        future: asset.thumbnailDataWithSize(ThumbnailSize(size, size)),
-        builder: (_, AsyncSnapshot<Uint8List?> snapshot) {
-          if (snapshot.hasData) {
-            return builder(snapshot.data!);
-          } else {
-            return Container();
-          }
-        });
+                child: state.selectedImage == null
+                    ? Center(
+                        child: Text('이미지를 선택하세요',
+                            style: TextStyle(color: Colors.black54)),
+                      )
+                    : null,
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              onChanged: notifier.updateContent,
+              maxLines: 5,
+              minLines: 1,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                focusColor: Colors.black,
+                labelText: '내용을 입력하세요',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
