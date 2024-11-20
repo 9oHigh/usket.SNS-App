@@ -18,12 +18,6 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     final notificationState = ref.watch(notificationNotifierProvder);
     final notificationNotifier = ref.read(notificationNotifierProvder.notifier);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!notificationState.isLoading) {
-        notificationNotifier.initailize();
-      }
-    });
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -50,17 +44,47 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                   itemCount: notificationState.notifications.length,
                   itemBuilder: (context, index) {
                     final notification = notificationState.notifications[index];
-                    return ListTile(
-                      title: Text(
-                        notification.message,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
+                    final icon = notification.type == "like"
+                        ? Icons.favorite
+                        : Icons.reply;
+                    return Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          context.push('/postDetail',
+                              extra: notification.postId);
+                        },
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 30,
+                                  width: 30,
+                                  child: Icon(icon,
+                                      color: icon == Icons.favorite
+                                          ? Colors.red
+                                          : Colors.black),
+                                ),
+                                const SizedBox(
+                                  width: 16,
+                                ),
+                                Text(
+                                  notification.message,
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                            const Divider(
+                              color: main_color,
+                              thickness: 0.125,
+                            ),
+                          ],
                         ),
                       ),
-                      onTap: () {
-                        context.push('/postDetail', extra: notification.postId);
-                      },
                     );
                   },
                 ),

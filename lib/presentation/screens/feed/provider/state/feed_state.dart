@@ -23,8 +23,8 @@ class FeedState {
     return FeedState(
       posts: posts ?? this.posts,
       isLoading: isLoading ?? this.isLoading,
-      error: this.error,
-      lastDocument: this.lastDocument,
+      error: error ?? this.error,
+      lastDocument: lastDocument ?? this.lastDocument,
     );
   }
 
@@ -32,6 +32,8 @@ class FeedState {
     return FeedState(
       posts: [],
       isLoading: false,
+      lastDocument: null,
+      error: null,
     );
   }
 }

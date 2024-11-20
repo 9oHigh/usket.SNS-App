@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:sns_app/core/manager/shared_preferences_manager.dart';
 import 'package:sns_app/data/models/user_model.dart' as signup;
 
 class SignupDatasource {
@@ -31,6 +32,7 @@ class SignupDatasource {
   Future<void> addUserToFirestore(String nickname, String email) async {
     final uid = _auth.currentUser!.uid;
     final token = await FirebaseMessaging.instance.getToken();
+    SharedPreferenceManager().setPref<String>(PrefsType.nickname, nickname);
     try {
       final defaultProfileImageUrl = await getDefaultProfileImageUrl();
       final signup.UserModel user = signup.UserModel(
@@ -61,5 +63,4 @@ class SignupDatasource {
       rethrow;
     }
   }
-
 }
