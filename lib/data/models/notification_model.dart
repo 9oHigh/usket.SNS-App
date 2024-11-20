@@ -20,7 +20,7 @@ class NotificationModel {
     return NotificationModel(
       type: data['type'],
       postId: data['postId'],
-      uid: data['uid'],
+      uid: data['userId'],
       message: data['message'],
       createdAt: data['createdAt'],
     );

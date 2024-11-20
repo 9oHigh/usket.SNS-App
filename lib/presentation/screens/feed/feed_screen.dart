@@ -8,10 +8,10 @@ class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _FeedScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => FeedScreenState();
 }
 
-class _FeedScreenState extends ConsumerState<FeedScreen> {
+class FeedScreenState extends ConsumerState<FeedScreen> {
   late ScrollController _scrollController;
 
   @override
@@ -30,13 +30,25 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
 
   void _scrollListener() {
     final feedState = ref.read(feedNotifierProvider);
-
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
       if (!feedState.isLoading) {
         ref.read(feedNotifierProvider.notifier).loadMore();
       }
     }
+  }
+
+  void scrollToTopAndRefresh() {
+    _scrollController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
+    ref.read(feedNotifierProvider.notifier).loadFeeds();
+  }
+
+  Future<void> _onRefresh() async {
+    await ref.read(feedNotifierProvider.notifier).loadFeeds();
   }
 
   @override
@@ -51,29 +63,33 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     });
 
     return Scaffold(
-      body: feedState.isLoading && feedState.posts.isEmpty
-          ? const Center(
-              child: CircularProgressIndicator(
-              color: main_color,
-            ))
-          : feedState.error != null
-              ? Center(child: Text("Error: ${feedState.error}"))
-              : ListView.builder(
-                  controller: _scrollController,
-                  itemCount: feedState.posts.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index == feedState.posts.length) {
-                      return feedState.isLoading
-                          ? const Center(
-                              child: CircularProgressIndicator(
-                              color: main_color,
-                            ))
-                          : const SizedBox.shrink();
-                    }
-                    final post = feedState.posts[index];
-                    return PostCard(post: post);
-                  },
-                ),
+      body: RefreshIndicator(
+        color: main_color,
+        onRefresh: _onRefresh,
+        child: feedState.isLoading && feedState.posts.isEmpty
+            ? const Center(
+                child: CircularProgressIndicator(
+                color: main_color,
+              ))
+            : feedState.error != null
+                ? Center(child: Text("${feedState.error}"))
+                : ListView.builder(
+                    controller: _scrollController,
+                    itemCount: feedState.posts.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index == feedState.posts.length) {
+                        return feedState.isLoading
+                            ? const Center(
+                                child: CircularProgressIndicator(
+                                color: main_color,
+                              ))
+                            : const SizedBox.shrink();
+                      }
+                      final post = feedState.posts[index];
+                      return PostCard(post: post);
+                    },
+                  ),
+      ),
     );
   }
 }

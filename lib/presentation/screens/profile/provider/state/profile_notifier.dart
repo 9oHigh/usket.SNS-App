@@ -22,20 +22,16 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
       state = state.copyWith(isLoading: true);
       final uid = await _getCurrentUserId();
       if (uid == null) {
-        print('No logged-in user.');
         state = state.copyWith(isLoading: false);
         return;
       }
       final user = await userRepository.getUserById(uid);
       if (user != null) {
-        print('User loaded: $user');
         state = state.copyWith(user: user, isLoading: false);
       } else {
-        print('User not found in Firestore.');
         state = state.copyWith(isLoading: false);
       }
     } catch (e) {
-      print('Error loading user: $e');
       state = state.copyWith(isLoading: false);
     }
   }
@@ -68,7 +64,6 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
       await userRepository.createUser(updatedUser);
       state = state.copyWith(user: updatedUser, isLoading: false);
     } catch (e) {
-      print('Error updating profile: $e');
       state = state.copyWith(isLoading: false);
     }
   }

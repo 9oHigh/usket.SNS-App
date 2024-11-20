@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/data/models/post_model.dart';
 import 'package:sns_app/presentation/screens/feed/provider/feed_notifier_provider.dart';
 
@@ -13,6 +14,12 @@ class PostCard extends ConsumerWidget {
     final feedNotifier = ref.read(feedNotifierProvider.notifier);
     const String defaultProfileUrl =
         "https://firebasestorage.googleapis.com/v0/b/elice-project2-team1.firebasestorage.app/o/posts%2F8FNzbWQuyXVNFBeEaHoFt9hpxbC3%2Fss_b349668fe7de40d36b1a8aedb1070d3e6ca74078.1920x1080.jpg?alt=media&token=c2a9fe27-cdbd-4b72-a5ab-e3a8ce32ce2f";
+
+    bool isImageLoading = true;
+
+    void onImageLoadComplete(bool success) {
+      isImageLoading = !success;
+    }
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
@@ -28,12 +35,42 @@ class PostCard extends ConsumerWidget {
             ),
             title: Text(post.userInfo?.nickname ?? "Unkown"),
           ),
-          Image.network(
-            post.imageUrl,
-            width: double.infinity,
-            height: 200,
-            fit: BoxFit.cover,
-            errorBuilder: (context, _, __) => const Icon(Icons.broken_image),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Image.network(
+                post.imageUrl,
+                width: double.infinity,
+                height: 200,
+                fit: BoxFit.cover,
+                errorBuilder: (context, _, __) {
+                  return const Icon(Icons.broken_image);
+                },
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    onImageLoadComplete(true);
+                    return child;
+                  } else {
+                    onImageLoadComplete(false);
+                    return Center(
+                      child: SizedBox(
+                        height: 200,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: main_color,
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    (loadingProgress.expectedTotalBytes ?? 1)
+                                : null,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
+              if (!isImageLoading) Container()
+            ],
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),

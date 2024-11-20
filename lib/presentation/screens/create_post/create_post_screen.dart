@@ -8,32 +8,34 @@ import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/presentation/screens/create_post/provider/create_post_notifier_provider.dart';
 
 class CreatePostScreen extends ConsumerWidget {
+  const CreatePostScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(createPostNotifierProvider);
     final notifier = ref.read(createPostNotifierProvider.notifier);
 
-    void _showPermissionDialog(BuildContext context) {
+    void showPermissionDialog(BuildContext context) {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('권한 요청'),
-          content: Text('갤러리 접근 권한이 필요합니다.'),
+          title: const Text('권한 요청'),
+          content: const Text('갤러리 접근 권한이 필요합니다.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('확인'),
+              child: const Text('확인'),
             ),
           ],
         ),
       );
     }
 
-    Future<void> _pickImage() async {
+    Future<void> pickImage() async {
       final status = await Permission.photos.request();
 
       if (!status.isGranted) {
-        _showPermissionDialog(context);
+        showPermissionDialog(context);
         return;
       }
 
@@ -45,50 +47,53 @@ class CreatePostScreen extends ConsumerWidget {
       }
     }
 
-    void _handleUpload() async {
+    void handleUpload() async {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => Center(
-          child: CircularProgressIndicator(),
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(
+            color: main_color,
+          ),
         ),
       );
-
       try {
         await notifier.uploadPost();
-
-        context.pop();
+        Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('게시물이 업로드되었습니다!')),
+          const SnackBar(
+            content: Text('게시물이 업로드되었습니다!'),
+            backgroundColor: main_color,
+          ),
         );
       } catch (e) {
-        Navigator.of(context).pop();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('업로드에 실패했습니다: $e')),
+          SnackBar(
+            content: Text('$e'),
+            backgroundColor: main_color,
+          ),
         );
       } finally {
-        Navigator.of(context).pop();
+        context.pop(true);
       }
     }
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: main_color,
-        title: Text('게시물 작성'),
-        titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
-        actions: [
-          TextButton(
-            onPressed: _handleUpload,
-            child: Text('완료', style: TextStyle(color: Colors.white)),
-          ),
-        ],
+        title: const Text(
+          '게시물 작성',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             GestureDetector(
-              onTap: _pickImage,
+              onTap: pickImage,
               child: Container(
                 height: 200,
                 width: double.infinity,
@@ -103,24 +108,44 @@ class CreatePostScreen extends ConsumerWidget {
                       : null,
                 ),
                 child: state.selectedImage == null
-                    ? Center(
-                        child: Text('이미지를 선택하세요',
+                    ? const Center(
+                        child: Text('이미지 선택',
                             style: TextStyle(color: Colors.black54)),
                       )
                     : null,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
               onChanged: notifier.updateContent,
               maxLines: 5,
               minLines: 1,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                focusColor: Colors.black,
-                labelText: '내용을 입력하세요',
+                focusColor: Colors.grey,
+                labelText: '내용을 입력해주세요.',
               ),
             ),
+            Expanded(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: main_color,
+                        maximumSize:
+                            Size(MediaQuery.of(context).size.width, 50)),
+                    onPressed: handleUpload,
+                    child: const Text(
+                      '작성 완료',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ),
+              ],
+            )),
           ],
         ),
       ),
