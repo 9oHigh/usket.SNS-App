@@ -1,43 +1,25 @@
-import 'package:photo_manager/photo_manager.dart';
-
-enum Mode { SINGLE, MULTI }
+import 'dart:io';
 
 class CreatePostState {
-  final Mode? mode;
-  final List<AssetPathEntity>? album;
-  final List<AssetEntity>? imageList;
-  final AssetEntity? previewImage;
-  final List<AssetEntity>? selectedImages;
-  final String? headerText;
+  final File? selectedImage;
   final String? content;
+  final bool isUploading;
 
   CreatePostState({
-    this.mode,
-    this.album,
-    this.imageList,
-    this.previewImage,
-    this.selectedImages,
-    this.headerText,
+    this.selectedImage,
     this.content,
+    this.isUploading = false,
   });
 
   CreatePostState copyWith({
-    Mode? mode,
-    List<AssetPathEntity>? album,
-    List<AssetEntity>? imageList,
-    AssetEntity? previewImage,
-    List<AssetEntity>? selectedImages,
-    String? headerText,
+    File? selectedImage,
     String? content,
+    bool? isUploading,
   }) {
     return CreatePostState(
-      mode: mode ?? this.mode,
-      album: album ?? this.album,
-      imageList: imageList ?? this.imageList,
-      previewImage: previewImage ?? this.previewImage,
-      selectedImages: selectedImages ?? this.selectedImages,
-      headerText: headerText ?? this.headerText,
+      selectedImage: selectedImage ?? this.selectedImage,
       content: content ?? this.content,
+      isUploading: isUploading ?? this.isUploading,
     );
   }
 }

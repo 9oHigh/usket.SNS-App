@@ -1,9 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sns_app/presentation/screens/profile/provider/profile_notifier_provider.dart';
 import 'package:sns_app/presentation/screens/signin/signin_screen.dart';
-import 'edit_profile_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   @override
@@ -89,11 +88,9 @@ class ProfileScreen extends ConsumerWidget {
                       SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => EditProfileScreen(),
-                          ));
+                          context.push('/profileEdit');
                         },
-                        child: Text('Edit Profile'),
+                        child: Text('프로필 수정'),
                       ),
                     ],
                   ),
