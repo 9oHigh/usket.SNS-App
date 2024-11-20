@@ -1,37 +1,37 @@
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sns_app/data/models/post_model.dart';
 
 class FeedState {
   final List<PostModel> posts;
   final bool isLoading;
   final String? error;
-  final int bottomNavIndex;
+  final DocumentSnapshot? lastDocument;
 
   FeedState({
-    required this.posts,
+    this.posts = const [],
     required this.isLoading,
     this.error,
-    this.bottomNavIndex = 0,
+    this.lastDocument,
   });
 
   FeedState copyWith({
     List<PostModel>? posts,
     bool? isLoading,
     String? error,
-    int? bottomNavIndex,
+    DocumentSnapshot? lastDocument,
   }) {
     return FeedState(
-        posts: posts ?? this.posts,
-        isLoading: isLoading ?? this.isLoading,
-        error: error,
-        bottomNavIndex: bottomNavIndex ?? this.bottomNavIndex);
+      posts: posts ?? this.posts,
+      isLoading: isLoading ?? this.isLoading,
+      error: this.error,
+      lastDocument: this.lastDocument,
+    );
   }
 
   factory FeedState.initial() {
     return FeedState(
       posts: [],
       isLoading: false,
-      bottomNavIndex: 0,
     );
   }
 }

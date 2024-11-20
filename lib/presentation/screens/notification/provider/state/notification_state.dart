@@ -1,7 +1,7 @@
 import 'package:sns_app/data/models/notification_model.dart';
 
 class NotificationState {
-  final Stream<List<NotificationModel>> notifications;
+  final List<NotificationModel> notifications;
   final bool isLoading;
   final String? errorMessage;
 
@@ -12,7 +12,7 @@ class NotificationState {
   });
 
   NotificationState copyWith({
-    Stream<List<NotificationModel>>? notifications,
+    List<NotificationModel>? notifications,
     bool? isLoading,
     String? errorMessage,
   }) {

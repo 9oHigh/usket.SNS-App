@@ -15,39 +15,55 @@ class NotificationScreen extends ConsumerStatefulWidget {
 class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
-    final notificationNotifier = ref.read(notificationNotifierProvder.notifier);
     final notificationState = ref.watch(notificationNotifierProvder);
+    final notificationNotifier = ref.read(notificationNotifierProvder.notifier);
 
-    return StreamBuilder(
-        stream: notificationState.notifications,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: Text(
-                "알림이 없습니다.",
-                style:
-                    TextStyle(color: main_color, fontWeight: FontWeight.bold),
-              ),
-            );
-          }
-          final notifications = snapshot.data!;
-          return ListView.builder(
-              itemCount: notifications.length,
-              itemBuilder: (context, index) {
-                final notification = notifications[index];
-                return ListTile(
-                  title: Text(
-                    notification.message,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!notificationState.isLoading) {
+        notificationNotifier.initailize();
+      }
+    });
+
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          '알림',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: main_color,
+      ),
+      body: notificationState.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : notificationState.notifications.isEmpty
+              ? const Center(
+                  child: Text(
+                    "알림이 없습니다.",
+                    style: TextStyle(
+                        color: main_color, fontWeight: FontWeight.w700),
                   ),
-                  onTap: () {
-                    context.push('/postDetail', extra: notification.postId);
+                )
+              : ListView.builder(
+                  itemCount: notificationState.notifications.length,
+                  itemBuilder: (context, index) {
+                    final notification = notificationState.notifications[index];
+                    return ListTile(
+                      title: Text(
+                        notification.message,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onTap: () {
+                        context.push('/postDetail', extra: notification.postId);
+                      },
+                    );
                   },
-                );
-              });
-        });
+                ),
+    );
   }
 }

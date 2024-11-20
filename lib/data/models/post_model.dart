@@ -4,49 +4,35 @@ import 'package:sns_app/data/models/user_model.dart';
 class PostModel {
   final String postId;
   final String uid;
-  final UserModel userInfo;
-  final String thumbnail;
-  final String description;
-  final List<dynamic> likes;
+  final String imageUrl;
+  final String content;
   final int likeCount;
+  final int commentCount;
   final Timestamp createdAt;
+  final UserModel? userInfo;
 
   PostModel({
     required this.postId,
     required this.uid,
-    required this.userInfo,
-    required this.thumbnail,
-    required this.description,
-    required this.likes,
+    required this.imageUrl,
+    required this.content,
     required this.likeCount,
+    required this.commentCount,
     required this.createdAt,
+    this.userInfo,
   });
-
-  factory PostModel.init(UserModel userInfo) {
-    var time = Timestamp.fromDate(DateTime.now());
-    return PostModel(
-      postId: "0",
-      uid: userInfo.uid,
-      userInfo: userInfo,
-      thumbnail: '',
-      description: '',
-      likes: [],
-      likeCount: 0,
-      createdAt: time,
-    );
-  }
 
   factory PostModel.fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return PostModel(
       postId: doc.id,
       uid: data['uid'],
-      userInfo: UserModel.fromJson(data['userInfo']),
-      thumbnail: data['thumbnail'],
-      description: data['description'],
-      likes: data['likes'],
-      likeCount: data['likeCount'] ?? 0,
+      imageUrl: data['imageUrl'],
+      content: data['content'],
+      likeCount: data['likeCount'] as int,
+      commentCount: data['commentCount'] as int,
       createdAt: data['createdAt'],
+      userInfo: null,
     );
   }
 
@@ -54,35 +40,33 @@ class PostModel {
     return {
       'postId': postId,
       'uid': uid,
-      'userInfo': userInfo.toJson(),
-      'thumbnail': thumbnail,
-      'description': description,
-      'likes': likes,
+      'imageUrl': imageUrl,
+      'content': content,
       'likeCount': likeCount,
+      'commentCount': commentCount,
       'createdAt': createdAt,
     };
   }
 
-  // copyWith 메서드 추가
   PostModel copyWith({
     String? postId,
     String? uid,
-    UserModel? userInfo,
-    String? thumbnail,
-    String? description,
-    List<dynamic>? likes,
+    String? imageUrl,
+    String? content,
     int? likeCount,
+    int? commentCount,
     Timestamp? createdAt,
+    UserModel? userInfo,
   }) {
     return PostModel(
       postId: postId ?? this.postId,
       uid: uid ?? this.uid,
-      userInfo: userInfo ?? this.userInfo,
-      thumbnail: thumbnail ?? this.thumbnail,
-      description: description ?? this.description,
-      likes: likes ?? this.likes,
+      imageUrl: imageUrl ?? this.imageUrl,
+      content: content ?? this.content,
       likeCount: likeCount ?? this.likeCount,
+      commentCount: commentCount ?? this.commentCount,
       createdAt: createdAt ?? this.createdAt,
+      userInfo: userInfo ?? this.userInfo,
     );
   }
 }

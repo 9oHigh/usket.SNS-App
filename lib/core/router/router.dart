@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sns_app/presentation/screens/app/app_screen.dart';
 import 'package:sns_app/presentation/screens/create_post/create_post_screen.dart';
 import 'package:sns_app/presentation/screens/create_post/create_post_second_screen.dart';
+import 'package:sns_app/presentation/screens/notification/notification_screen.dart';
 import 'package:sns_app/presentation/screens/signin/signin_screen.dart';
 import 'package:sns_app/presentation/screens/signup/signup_first_screen.dart';
 import 'package:sns_app/presentation/screens/signup/signup_second_screen.dart';
@@ -43,9 +44,9 @@ GoRouter createRouter(bool isLoggedIn) {
             const CupertinoPage(child: CreatePostScreen()),
       ),
       GoRoute(
-          path: "/createPostSecond",
+          path: "/notification",
           pageBuilder: (context, state) =>
-              const CupertinoPage(child: CreatePostSecondScreen())),
+              const CupertinoPage(child: NotificationScreen())),
     ],
   );
 }
