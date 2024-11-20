@@ -2,7 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sns_app/presentation/screens/app/app_screen.dart';
 import 'package:sns_app/presentation/screens/create_post/create_post_screen.dart';
+<<<<<<< HEAD
 import 'package:sns_app/presentation/screens/profile/edit_profile_screen.dart';
+=======
+import 'package:sns_app/presentation/screens/create_post/create_post_second_screen.dart';
+import 'package:sns_app/presentation/screens/notification/notification_screen.dart';
+>>>>>>> feat/notification
 import 'package:sns_app/presentation/screens/signin/signin_screen.dart';
 import 'package:sns_app/presentation/screens/signup/signup_first_screen.dart';
 import 'package:sns_app/presentation/screens/signup/signup_second_screen.dart';
@@ -43,9 +48,15 @@ GoRouter createRouter(bool isLoggedIn) {
             CupertinoPage(child: CreatePostScreen()),
       ),
       GoRoute(
+<<<<<<< HEAD
           path: "/profileEdit",
           pageBuilder: (context, state) =>
               CupertinoPage(child: EditProfileScreen())),
+=======
+          path: "/notification",
+          pageBuilder: (context, state) =>
+              const CupertinoPage(child: NotificationScreen())),
+>>>>>>> feat/notification
     ],
   );
 }

@@ -6,7 +6,7 @@ import 'package:sns_app/presentation/screens/app/provider/state/app_state.dart';
 
 class AppNotifier extends StateNotifier<AppState> {
   AppNotifier() : super(AppState()) {
-    initailizeNotificationCount();
+    updateNotificationCount();
     litenNotifications();
   }
 
@@ -18,7 +18,7 @@ class AppNotifier extends StateNotifier<AppState> {
     state = state.copyWith(bottomNavIndex: index);
   }
 
-  void initailizeNotificationCount() async {
+  void updateNotificationCount() async {
     final unReadNotifiactionCount = SharedPreferenceManager()
             .getPref<int>(PrefsType.unReadNotificationCount) ??
         0;
@@ -26,8 +26,10 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   Future<void> litenNotifications() async {
+    /*
+    Token 확인용 코드
     final token = await FirebaseMessaging.instance.getToken();
-    print("token: $token");
+     */
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification? notification = message.notification;
       if (notification != null) {

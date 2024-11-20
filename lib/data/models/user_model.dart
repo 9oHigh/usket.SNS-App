@@ -9,6 +9,7 @@ class UserModel {
   final int followers;
   final int followings;
   final List<dynamic> postIds;
+  final String fcmToken;
 
   UserModel({
     required this.uid,
@@ -19,6 +20,7 @@ class UserModel {
     required this.followers,
     required this.followings,
     required this.postIds,
+    required this.fcmToken,
   });
 
   UserModel copyWith({
@@ -30,6 +32,7 @@ class UserModel {
     int? followers,
     int? followings,
     List<dynamic>? postIds,
+    String? fcmToken,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -40,6 +43,7 @@ class UserModel {
       followers: followers ?? this.followers,
       followings: followings ?? this.followings,
       postIds: postIds ?? this.postIds,
+      fcmToken: fcmToken ?? this.fcmToken,
     );
   }
 
@@ -55,6 +59,7 @@ class UserModel {
       followers: json['followers'] == null ? 0 : json['followers'] as int,
       followings: json['followings'] == null ? 0 : json['followings'] as int,
       postIds: json['postIds'] == null ? [] : json['postIds'] as List<dynamic>,
+      fcmToken: json['fcmToken'] as String,
     );
   }
 
@@ -68,6 +73,7 @@ class UserModel {
       followers: 0,
       followings: 0,
       postIds: [],
+      fcmToken: "",
     );
   }
 
@@ -82,6 +88,7 @@ class UserModel {
       followings: data['followings'] ?? 0,
       postIds: List<String>.from(data['postIds'] ?? []),
       email: data['email'] ?? '',
+      fcmToken: data['fcmToken'],
     );
   }
 
@@ -95,6 +102,7 @@ class UserModel {
       'followers': followers,
       'followings': followings,
       'postIds': postIds,
+      'fcmToken': fcmToken,
     };
   }
 }

@@ -1,68 +1,123 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sns_app/core/manager/shared_preferences_manager.dart';
 import 'package:sns_app/data/models/post_model.dart';
+import 'package:sns_app/data/models/user_model.dart';
 import 'package:sns_app/presentation/screens/feed/provider/state/feed_state.dart';
 
 class FeedNotifier extends StateNotifier<FeedState> {
   FeedNotifier() : super(FeedState.initial());
 
-  Future<void> loadFeed() async {
-    print('loadFeed');
+  Future<void> loadFeeds() async {
     state = state.copyWith(isLoading: true);
 
     try {
       final snapshot = await FirebaseFirestore.instance
           .collection('posts')
           .orderBy('createdAt', descending: true)
+          .limit(5)
           .get();
 
-      final posts =
-          snapshot.docs.map((doc) => PostModel.fromDocument(doc)).toList();
+      final posts = await Future.wait(snapshot.docs.map((doc) async {
+        final post = PostModel.fromDocument(doc);
+        final userSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(post.uid)
+            .get();
+        final user = UserModel.fromDocument(userSnapshot);
+        return post.copyWith(userInfo: user);
+      }).toList());
 
-      state = state.copyWith(posts: posts, isLoading: false);
+      state = state.copyWith(
+          posts: posts,
+          isLoading: false,
+          lastDocument: snapshot.docs.isNotEmpty ? snapshot.docs.last : null);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
-      print('Error loading feed: $e');
     }
   }
 
-  /// 게시물 좋아요 토글
-  Future<void> toggleLike(PostModel post, String uid) async {
-    final docRef =
-        FirebaseFirestore.instance.collection('posts').doc(post.postId);
-    bool isLiked = await _checkIfLiked(post, uid);
+  Future<void> loadMore() async {
+    if (state.lastDocument == null) return;
 
+    state = state.copyWith(isLoading: true);
     try {
-      await docRef.update({
-        'likeCount': FieldValue.increment(isLiked ? -1 : 1),
-      });
+      final snapshot = await FirebaseFirestore.instance
+          .collection('posts')
+          .orderBy('createdAt', descending: true)
+          .startAfterDocument(state.lastDocument!)
+          .limit(5)
+          .get();
 
-      final updatedPosts = state.posts.map((p) {
-        if (p.postId == post.postId) {
-          return p.copyWith(
-            likeCount: p.likeCount + (isLiked ? -1 : 1),
-          );
-        }
-        return p;
-      }).toList();
+      final posts = await Future.wait(snapshot.docs.map((doc) async {
+        final post = PostModel.fromDocument(doc);
+        final userSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(post.uid)
+            .get();
+        final user = UserModel.fromDocument(userSnapshot);
+        return post.copyWith(userInfo: user);
+      }).toList());
 
-      state = state.copyWith(posts: updatedPosts);
+      state = state.copyWith(
+        posts: [...state.posts, ...posts],
+        isLoading: false,
+        lastDocument: snapshot.docs.isNotEmpty ? snapshot.docs.last : null,
+      );
     } catch (e) {
-      print('Error toggling like: $e');
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
 
-  Future<bool> _checkIfLiked(PostModel post, String uid) async {
-    final docSnapshot = await FirebaseFirestore.instance
+  Future<void> toggleLike(String postId) async {
+    final userId =
+        SharedPreferenceManager().getPref<String>(PrefsType.userId) ?? "";
+    final likeDocRef = FirebaseFirestore.instance
         .collection('posts')
-        .doc(post.postId)
-        .get();
-    final data = docSnapshot.data() as Map<String, dynamic>;
-    final List<dynamic> likes = data['likes'] ?? [];
-    return likes.contains(uid);
+        .doc(postId)
+        .collection('likes')
+        .doc(userId);
+    final postDocRef =
+        FirebaseFirestore.instance.collection('posts').doc(postId);
+    final likeDocSnapshot = await likeDocRef.get();
+    bool disLike = true;
+
+    if (likeDocSnapshot.exists) {
+      await likeDocRef.delete();
+      await postDocRef.update({
+        'likesCount': FieldValue.increment(-1),
+      });
+    } else {
+      await likeDocRef.set({
+        'userId': userId,
+        'likedAt': FieldValue.serverTimestamp(),
+      });
+      await postDocRef.update({
+        'likesCount': FieldValue.increment(1),
+      });
+      disLike = false;
+    }
+    List<PostModel> updatedPosts = state.posts.map((post) {
+      if (post.postId == postId) {
+        return post.copyWith(
+            likeCount: disLike ? post.likeCount + -1 : post.likeCount + 1);
+      } else {
+        return post;
+      }
+    }).toList();
+    state = state.copyWith(posts: updatedPosts);
   }
 
-  void updateBottomNavIndex(int index) {
-    state = state.copyWith(bottomNavIndex: index);
+  Future<bool> isLikedByCurrentUser(String postId) async {
+    final userId =
+        SharedPreferenceManager().getPref<String>(PrefsType.userId) ?? "";
+    final likeDocRef = FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .collection('likes')
+        .doc(userId);
+
+    final likeDocSnapshot = await likeDocRef.get();
+    return likeDocSnapshot.exists;
   }
 }

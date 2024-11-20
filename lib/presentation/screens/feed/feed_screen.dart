@@ -1,35 +1,79 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sns_app/data/models/post_model.dart';
+import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/presentation/screens/feed/provider/feed_notifier_provider.dart';
-import 'package:sns_app/presentation/screens/signin/provider/signin_notifier_provider.dart';
 import 'package:sns_app/presentation/widgets/post_card.dart';
 
-class FeedScreen extends ConsumerWidget {
+class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _FeedScreenState();
+}
+
+class _FeedScreenState extends ConsumerState<FeedScreen> {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() {
+    final feedState = ref.read(feedNotifierProvider);
+
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      if (!feedState.isLoading) {
+        ref.read(feedNotifierProvider.notifier).loadMore();
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final feedNotifier = ref.read(feedNotifierProvider.notifier);
     final feedState = ref.watch(feedNotifierProvider);
-    final signinState = ref.watch(signinNotifierProvider);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (feedState.posts.isEmpty && !feedState.isLoading) {
+        feedNotifier.loadFeeds();
+      }
+    });
 
     return Scaffold(
-        body: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('posts').snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (context, index) {
-                      return PostCard(
-                          post: PostModel.fromDocument(
-                              snapshot.data!.docs[index]));
-                    });
-              } else {
-                return Container();
-              }
-            }));
+      body: feedState.isLoading && feedState.posts.isEmpty
+          ? const Center(
+              child: CircularProgressIndicator(
+              color: main_color,
+            ))
+          : feedState.error != null
+              ? Center(child: Text("Error: ${feedState.error}"))
+              : ListView.builder(
+                  controller: _scrollController,
+                  itemCount: feedState.posts.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == feedState.posts.length) {
+                      return feedState.isLoading
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                              color: main_color,
+                            ))
+                          : const SizedBox.shrink();
+                    }
+                    final post = feedState.posts[index];
+                    return PostCard(post: post);
+                  },
+                ),
+    );
   }
 }

@@ -34,7 +34,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       1;
   SharedPreferenceManager()
       .setPref<int>(PrefsType.unReadNotificationCount, count);
-  // MARK: - 알림에 표시 적용
 }
 
 Future<void> _initializeFCM() async {

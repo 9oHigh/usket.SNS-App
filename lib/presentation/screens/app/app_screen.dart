@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/core/manager/alert_manager.dart';
@@ -24,6 +25,7 @@ class _AppScreenState extends ConsumerState<AppScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appNotifier = ref.read(appNotifierProvider.notifier);
     final appState = ref.watch(appNotifierProvider);
 
     _requestNotificationPermission();
@@ -39,8 +41,9 @@ class _AppScreenState extends ConsumerState<AppScreen> {
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                // MARK: - 알림 화면 이동
+              onPressed: () async {
+                await context.push('/notification');
+                appNotifier.updateNotificationCount();
               },
               icon: Badge(
                 isLabelVisible: appState.notificationCount > 0 ? true : false,
