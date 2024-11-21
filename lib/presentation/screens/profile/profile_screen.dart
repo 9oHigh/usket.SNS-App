@@ -17,8 +17,8 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
     final profileState = ref.watch(profileNotifierProvider);
 
     final screenWidth = MediaQuery.of(context).size.width;
-    final crossAxisCount = 3;
-    final spacing = 4.0;
+    const crossAxisCount = 3;
+    const spacing = 4.0;
     final itemWidth =
         (screenWidth - spacing * (crossAxisCount - 1)) / crossAxisCount;
 
@@ -53,17 +53,17 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                               profileState.user!.profileImageUrl,
                             ),
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           Text(
                             profileState.user!.nickname,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text(profileState.user!.bio),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
@@ -71,47 +71,47 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 children: [
                                   Text(
                                     profileState.user!.followers.toString(),
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  Text('Followers'),
+                                  const Text('Followers'),
                                 ],
                               ),
                               Column(
                                 children: [
                                   Text(
                                     profileState.user!.followings.toString(),
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  Text('Following'),
+                                  const Text('Following'),
                                 ],
                               ),
                               Column(
                                 children: [
                                   Text(
                                     profileState.userPosts.length.toString(),
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  Text('Posts'),
+                                  const Text('Posts'),
                                 ],
                               ),
                             ],
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
                           TextButton(
                             onPressed: () {
                               context.push('/profileEdit');
                             },
-                            child: Text('프로필 수정'),
+                            child: const Text('프로필 수정'),
                           ),
                         ],
                       ),
                     ),
                     Expanded(
                       child: profileState.userPosts.isEmpty
-                          ? Center(child: Text('게시물이 없습니다.'))
+                          ? const Center(child: Text('게시물이 없습니다.'))
                           : Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 0),
