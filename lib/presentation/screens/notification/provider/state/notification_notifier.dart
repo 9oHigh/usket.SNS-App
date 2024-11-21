@@ -30,6 +30,7 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
           .map((doc) => NotificationModel.fromDocument(doc))
           .toList();
       state = state.copyWith(notifications: notifications);
+      print('error: $notifications');
     } catch (e) {
       state = state.copyWith(errorMessage: e.toString());
     }
