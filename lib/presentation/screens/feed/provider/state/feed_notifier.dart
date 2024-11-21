@@ -98,14 +98,16 @@ class FeedNotifier extends StateNotifier<FeedState> {
       });
       disLike = false;
     }
+
     List<PostModel> updatedPosts = state.posts.map((post) {
       if (post.postId == postId) {
         return post.copyWith(
-            likeCount: disLike ? post.likeCount + -1 : post.likeCount + 1);
+            likeCount: disLike ? post.likeCount -1 : post.likeCount + 1);
       } else {
         return post;
       }
     }).toList();
+
     state = state.copyWith(posts: updatedPosts);
   }
 
