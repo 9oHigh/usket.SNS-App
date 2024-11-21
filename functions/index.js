@@ -1,4 +1,4 @@
-const { onDocumentCreated, onDocumentDeleted } = require("firebase-functions/v2/firestore");
+const {onDocumentCreated, onDocumentDeleted} = require("firebase-functions/v2/firestore");
 const admin = require("firebase-admin");
 
 admin.initializeApp();
@@ -81,7 +81,7 @@ exports.sendCommentNotification = onDocumentCreated(
         const notification = {
             type: "comment",
             postId: postId,
-            userId: commentData.userId,
+            userId: commentData.uid,
             message: `${commentData.nickname}님이 댓글을 남겼습니다.`,
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
         };
