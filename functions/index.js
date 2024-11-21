@@ -1,4 +1,4 @@
-const {onDocumentCreated, onDocumentDeleted} = require("firebase-functions/v2/firestore");
+const { onDocumentCreated, onDocumentDeleted } = require("firebase-functions/v2/firestore");
 const admin = require("firebase-admin");
 
 admin.initializeApp();
@@ -117,5 +117,14 @@ exports.decreaseCommentsCount = onDocumentDeleted("/posts/{postId}/comments/{com
 
     await postRef.update({
         commentCount: admin.firestore.FieldValue.increment(-1),
+    });
+});
+
+exports.updateCommentCount = onDocumentCreated("/posts/{postId}/comments/{commentId}", async (event) => {
+    const postId = event.params.postId;
+    const postRef = admin.firestore().collection("posts").doc(postId);
+
+    await postRef.update({
+        commentCount: admin.firestore.FieldValue.increment(1),
     });
 });

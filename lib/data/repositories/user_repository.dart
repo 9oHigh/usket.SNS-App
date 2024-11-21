@@ -9,9 +9,7 @@ class UserRepository {
   Future<void> createUser(UserModel user) async {
     try {
       await _firestore.collection('users').doc(user.uid).set(user.toJson());
-    } catch (e) {
-      print("Error creating user: $e");
-    }
+    } catch (_) {}
   }
 
   Future<UserModel?> getUserById(String userId) async {
@@ -20,11 +18,10 @@ class UserRepository {
       if (doc.exists) {
         return UserModel.fromDocument(doc);
       } else {
-        print("Error: $doc");
+        return null;
       }
     } catch (e) {
-      print("Error getting user: $e");
+      return null;
     }
-    return null;
   }
 }

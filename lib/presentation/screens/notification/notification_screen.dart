@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sns_app/core/constants/colors.dart';
+import 'package:sns_app/data/models/post_model.dart';
 import 'package:sns_app/presentation/screens/notification/provider/notification_notifier_provider.dart';
 
 class NotificationScreen extends ConsumerStatefulWidget {
@@ -50,9 +52,14 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                     return Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: GestureDetector(
-                        onTap: () {
+                        onTap: () async {
+                          final postSnapshot = await FirebaseFirestore.instance
+                              .collection('posts')
+                              .doc(notification.postId)
+                              .get();
+
                           context.push('/postDetail',
-                              extra: notification.postId);
+                              extra: PostModel.fromDocument(postSnapshot));
                         },
                         child: Column(
                           children: [

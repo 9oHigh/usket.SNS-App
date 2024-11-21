@@ -31,7 +31,6 @@ class AuthRepository {
 
       return userCredential.user;
     } catch (e) {
-      print('로그인 실패: $e');
       rethrow;
     }
   }
@@ -41,7 +40,6 @@ class AuthRepository {
     try {
       await _auth.signOut();
     } catch (e) {
-      print('로그아웃 실패: $e');
       rethrow;
     }
   }
@@ -57,7 +55,6 @@ class AuthRepository {
       );
       return userCredential.user;
     } catch (e) {
-      print('계정 생성 실패: $e');
       rethrow;
     }
   }
@@ -69,7 +66,6 @@ class AuthRepository {
         await user.sendEmailVerification();
       }
     } catch (e) {
-      print('이메일 인증 전송 실패: $e');
       rethrow;
     }
   }
@@ -84,7 +80,6 @@ class AuthRepository {
       );
       await user.reauthenticateWithCredential(credential);
     } catch (e) {
-      print('재인증 실패: $e');
       rethrow;
     }
   }
@@ -99,7 +94,6 @@ class AuthRepository {
     try {
       await user.delete();
     } catch (e) {
-      print('사용자 삭제 실패: $e');
       rethrow;
     }
   }

@@ -22,6 +22,17 @@ class PostModel {
     this.userInfo,
   });
 
+  factory PostModel.initial() {
+    return PostModel(
+        postId: "",
+        uid: "",
+        imageUrl: "",
+        content: "",
+        likeCount: 0,
+        commentCount: 0,
+        createdAt: Timestamp.fromDate(DateTime.now()));
+  }
+
   factory PostModel.fromDocument(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return PostModel(

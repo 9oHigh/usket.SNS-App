@@ -37,9 +37,7 @@ class SigninNotifier extends StateNotifier<SigninState> {
           state = state.copyWith(
               user: UserModel.fromJson(userData.docs.first.data()));
         }
-      } catch (e) {
-        print(e.toString());
-      }
+      } catch (_) {}
 
       SharedPreferenceManager().setPref<String>(PrefsType.userId, userId);
       SharedPreferenceManager().setPref<bool>(PrefsType.isLoggedIn, true);
