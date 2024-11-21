@@ -24,7 +24,6 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
       state = state.copyWith(isLoading: true);
       final uid = await _getCurrentUserId();
       if (uid == null) {
-        print('No logged-in user.');
         state = state.copyWith(isLoading: false);
         return;
       }

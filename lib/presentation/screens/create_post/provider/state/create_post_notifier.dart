@@ -17,12 +17,16 @@ class CreatePostNotifier extends StateNotifier<CreatePostState> {
     state = state.copyWith(content: content);
   }
 
+  void resetState() {
+    state = CreatePostState();
+  }
+
   Future<void> uploadPost() async {
     final selectedImage = state.selectedImage;
     final content = state.content;
 
     if (selectedImage == null || content == null || content.trim().isEmpty) {
-      throw Exception('이미지와 내용을 모두 입력해야 합니다.');
+      throw '이미지와 내용을 모두 입력해야 합니다.';
     }
 
     try {
@@ -46,17 +50,11 @@ class CreatePostNotifier extends StateNotifier<CreatePostState> {
       };
 
       await FirebaseFirestore.instance.collection('posts').add(post);
-
       resetState();
-    } catch (e) {
-      print('게시물 업로드 오류: $e');
-      rethrow;
+    } catch (_) {
+      resetState();
     } finally {
       state = state.copyWith(isUploading: false);
     }
-  }
-
-  void resetState() {
-    state = CreatePostState();
   }
 }

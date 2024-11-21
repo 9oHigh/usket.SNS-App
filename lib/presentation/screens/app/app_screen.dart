@@ -18,10 +18,20 @@ class AppScreen extends ConsumerStatefulWidget {
 }
 
 class _AppScreenState extends ConsumerState<AppScreen> {
-  final List<Widget> screens = [
-    const FeedScreen(),
-    ProfileScreen(),
-  ];
+  final GlobalKey<FeedScreenState> feedScreenKey = GlobalKey<FeedScreenState>();
+  final GlobalKey<ProfileScreenState> profileScreenKey =
+      GlobalKey<ProfileScreenState>();
+
+  List<Widget> screens = [];
+
+  @override
+  void initState() {
+    super.initState();
+    screens = [
+      FeedScreen(key: feedScreenKey),
+      ProfileScreen(key: profileScreenKey),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +69,8 @@ class _AppScreenState extends ConsumerState<AppScreen> {
         backgroundColor: main_color,
       ),
       body: screens[appState.bottomNavIndex],
-      floatingActionButton: const CreatePostFloatingButton(),
+      floatingActionButton:
+          CreatePostFloatingButton(feedScreenKey: feedScreenKey),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: const BottomNavBar(),
     );

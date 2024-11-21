@@ -27,11 +27,10 @@ class FeedNotifier extends StateNotifier<FeedState> {
         final user = UserModel.fromDocument(userSnapshot);
         return post.copyWith(userInfo: user);
       }).toList());
-
+      final DocumentSnapshot? docSnapshot =
+          snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
       state = state.copyWith(
-          posts: posts,
-          isLoading: false,
-          lastDocument: snapshot.docs.isNotEmpty ? snapshot.docs.last : null);
+          posts: posts, isLoading: false, lastDocument: docSnapshot);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }
@@ -48,7 +47,6 @@ class FeedNotifier extends StateNotifier<FeedState> {
           .startAfterDocument(state.lastDocument!)
           .limit(5)
           .get();
-
       final posts = await Future.wait(snapshot.docs.map((doc) async {
         final post = PostModel.fromDocument(doc);
         final userSnapshot = await FirebaseFirestore.instance
@@ -72,6 +70,8 @@ class FeedNotifier extends StateNotifier<FeedState> {
   Future<void> toggleLike(String postId) async {
     final userId =
         SharedPreferenceManager().getPref<String>(PrefsType.userId) ?? "";
+    final nickname =
+        SharedPreferenceManager().getPref<String>(PrefsType.nickname) ?? "유저";
     final likeDocRef = FirebaseFirestore.instance
         .collection('posts')
         .doc(postId)
@@ -85,15 +85,16 @@ class FeedNotifier extends StateNotifier<FeedState> {
     if (likeDocSnapshot.exists) {
       await likeDocRef.delete();
       await postDocRef.update({
-        'likesCount': FieldValue.increment(-1),
+        'likeCount': FieldValue.increment(-1),
       });
     } else {
       await likeDocRef.set({
         'userId': userId,
         'likedAt': FieldValue.serverTimestamp(),
+        'nickname': nickname,
       });
       await postDocRef.update({
-        'likesCount': FieldValue.increment(1),
+        'likeCount': FieldValue.increment(1),
       });
       disLike = false;
     }

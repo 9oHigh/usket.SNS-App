@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sns_app/core/constants/colors.dart';
+import 'package:sns_app/core/manager/shared_preferences_manager.dart';
 import 'package:sns_app/presentation/screens/profile/provider/profile_notifier_provider.dart';
 import 'dart:io';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
+  const EditProfileScreen({super.key});
+
   @override
   ConsumerState<EditProfileScreen> createState() => _EditProfileScreenState();
 }
@@ -32,14 +36,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Profile'),
+        centerTitle: true,
+        title: const Text(
+          '프로필 수정',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          color: Colors.black,
+          icon: const Icon(Icons.arrow_back),
+          color: Colors.white,
           onPressed: () {
-            Navigator.pop(context);
+            context.pop();
           },
         ),
+        backgroundColor: main_color,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -55,29 +64,47 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         as ImageProvider,
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextField(
               controller: _nicknameController
                 ..text = profileState.user?.nickname ?? '',
-              decoration: InputDecoration(labelText: 'Nickname'),
+              decoration: const InputDecoration(labelText: '닉네임'),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextField(
               controller: _bioController..text = profileState.user?.bio ?? '',
-              decoration: InputDecoration(labelText: 'Bio'),
+              decoration: const InputDecoration(labelText: '자기소개'),
             ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () async {
-                await profileNotifier.updateProfile(
-                  nickname: _nicknameController.text,
-                  bio: _bioController.text,
-                  imageFile: _imageFile,
-                );
-                context.push('/profile');
-              },
-              child: const Text('Save Changes'),
-            ),
+            const SizedBox(height: 16),
+            Expanded(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: main_color,
+                        maximumSize:
+                            Size(MediaQuery.of(context).size.width, 50)),
+                    onPressed: () async {
+                      await profileNotifier.updateProfile(
+                        nickname: _nicknameController.text,
+                        bio: _bioController.text,
+                        imageFile: _imageFile,
+                      );
+                      SharedPreferenceManager().setPref<String>(
+                          PrefsType.nickname, _nicknameController.text);
+                      context.pop();
+                    },
+                    child: const Text(
+                      '변경하기',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ),
+              ],
+            )),
           ],
         ),
       ),

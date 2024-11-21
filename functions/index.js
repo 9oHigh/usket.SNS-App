@@ -12,13 +12,18 @@ exports.sendLikeNotification = onDocumentCreated(
         const postSnapshot = await admin.firestore().collection("posts").doc(postId).get();
         const post = postSnapshot.data();
         const authorId = post.uid;
+
+        if (authorId === uid) {
+            return;
+        }
+
         const userSnapshot = await admin.firestore().collection("users").doc(authorId).get();
         const authorData = userSnapshot.data();
         const token = authorData.fcmToken;
         const message = {
             notification: {
                 title: "새로운 좋아요",
-                body: `${likeData.userName}님이 게시물을 좋아합니다.`,
+                body: `${likeData.nickname}님이 게시물을 좋아합니다.\n확인해보세요 :)`,
             },
             token: token,
             data: {
@@ -33,7 +38,7 @@ exports.sendLikeNotification = onDocumentCreated(
             type: "like",
             postId: postId,
             userId: uid,
-            message: `${likeData.userName}님이 게시물을 좋아합니다.`,
+            message: `${likeData.nickname}님이 게시물을 좋아합니다.`,
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
         };
 
@@ -51,6 +56,10 @@ exports.sendCommentNotification = onDocumentCreated(
         const post = postSnapshot.data();
         const authorId = post.uid;
 
+        if (authorId === commentData.uid) {
+            return;
+        }
+
         const userSnapshot = await admin.firestore().collection("users").doc(authorId).get();
         const authorData = userSnapshot.data();
         const token = authorData.fcmToken;
@@ -58,7 +67,7 @@ exports.sendCommentNotification = onDocumentCreated(
         const message = {
             notification: {
                 title: "새로운 댓글",
-                body: `${commentData.userName}님이 댓글을 남겼습니다: "${commentData.content}"`,
+                body: `${commentData.nickname}님이 댓글을 남겼습니다: "${commentData.content}"`,
             },
             token: token,
             data: {
@@ -73,7 +82,7 @@ exports.sendCommentNotification = onDocumentCreated(
             type: "comment",
             postId: postId,
             userId: commentData.userId,
-            message: `${commentData.userName}님이 댓글을 남겼습니다.`,
+            message: `${commentData.nickname}님이 댓글을 남겼습니다.`,
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
         };
 
@@ -88,7 +97,7 @@ exports.updateLikesCount = onDocumentCreated(
         const postRef = admin.firestore().collection("posts").doc(postId);
 
         await postRef.update({
-            likesCount: admin.firestore.FieldValue.increment(1),
+            likeCount: admin.firestore.FieldValue.increment(1),
         });
     },
 );
@@ -98,7 +107,7 @@ exports.decreaseLikesCount = onDocumentDeleted("/posts/{postId}/likes/{uid}", as
     const postRef = admin.firestore().collection("posts").doc(postId);
 
     await postRef.update({
-        likesCount: admin.firestore.FieldValue.increment(-1),
+        likeCount: admin.firestore.FieldValue.increment(-1),
     });
 });
 
@@ -107,6 +116,6 @@ exports.decreaseCommentsCount = onDocumentDeleted("/posts/{postId}/comments/{com
     const postRef = admin.firestore().collection("posts").doc(postId);
 
     await postRef.update({
-        commentsCount: admin.firestore.FieldValue.increment(-1),
+        commentCount: admin.firestore.FieldValue.increment(-1),
     });
 });

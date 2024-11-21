@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/presentation/screens/profile/provider/profile_notifier_provider.dart';
 
-class ProfileScreen extends ConsumerWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
+  const ProfileScreen({super.key});
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => ProfileScreenState();
+}
+
+class ProfileScreenState extends ConsumerState<ProfileScreen> {
+  @override
+  Widget build(BuildContext context) {
     final profileState = ref.watch(profileNotifierProvider);
 
     final screenWidth = MediaQuery.of(context).size.width;
@@ -16,18 +24,18 @@ class ProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       body: profileState.isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : profileState.user == null
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('No user data available'),
+                      const Text('No user data available'),
                       ElevatedButton(
                         onPressed: () {
                           Navigator.pushNamed(context, '/signin');
                         },
-                        child: Text('Go to Login'),
+                        child: const Text('Go to Login'),
                       ),
                     ],
                   ),

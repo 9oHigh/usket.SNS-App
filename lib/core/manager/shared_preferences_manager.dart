@@ -4,6 +4,7 @@ enum PrefsType {
   isLoggedIn,
   userId,
   unReadNotificationCount,
+  nickname,
 }
 
 extension on PrefsType {
@@ -32,6 +33,8 @@ class SharedPreferenceManager {
     switch (type) {
       case PrefsType.userId:
         return _prefs.getString(type.prefsName) as T?;
+      case PrefsType.nickname:
+        return _prefs.getString(type.prefsName) as T?;
       case PrefsType.unReadNotificationCount:
         return _prefs.getInt(type.prefsName) as T?;
       default:
@@ -42,6 +45,8 @@ class SharedPreferenceManager {
   Future<bool> setPref<T>(PrefsType type, T pref) async {
     switch (type) {
       case PrefsType.userId:
+        return await _prefs.setString(type.prefsName, pref as String);
+      case PrefsType.nickname:
         return await _prefs.setString(type.prefsName, pref as String);
       case PrefsType.unReadNotificationCount:
         return await _prefs.setInt(type.prefsName, pref as int);
