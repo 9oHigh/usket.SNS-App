@@ -70,8 +70,10 @@ class FeedNotifier extends StateNotifier<FeedState> {
   Future<void> toggleLike(String postId) async {
     final userId =
         SharedPreferenceManager().getPref<String>(PrefsType.userId) ?? "";
-    final nickname =
-        SharedPreferenceManager().getPref<String>(PrefsType.nickname) ?? "유저";
+    final userSnapShot =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    final user = UserModel.fromDocument(userSnapShot);
+    final nickname = user.nickname;
     final likeDocRef = FirebaseFirestore.instance
         .collection('posts')
         .doc(postId)
@@ -102,7 +104,7 @@ class FeedNotifier extends StateNotifier<FeedState> {
     List<PostModel> updatedPosts = state.posts.map((post) {
       if (post.postId == postId) {
         return post.copyWith(
-            likeCount: disLike ? post.likeCount -1 : post.likeCount + 1);
+            likeCount: disLike ? post.likeCount - 1 : post.likeCount + 1);
       } else {
         return post;
       }
