@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sns_app/core/constants/colors.dart';
+import 'package:sns_app/core/manager/shared_preferences_manager.dart';
 import 'package:sns_app/data/models/post_model.dart';
 import 'package:sns_app/presentation/screens/notification/provider/notification_notifier_provider.dart';
 
@@ -15,6 +16,13 @@ class NotificationScreen extends ConsumerStatefulWidget {
 }
 
 class _NotificationScreenState extends ConsumerState<NotificationScreen> {
+  @override
+  void initState() {
+    SharedPreferenceManager()
+        .setPref<int>(PrefsType.unReadNotificationCount, 0);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final notificationState = ref.watch(notificationNotifierProvder);

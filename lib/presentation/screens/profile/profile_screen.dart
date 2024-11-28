@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:sns_app/core/constants/colors.dart';
 import 'package:sns_app/presentation/screens/profile/provider/profile_notifier_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -15,7 +14,6 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileNotifierProvider);
-
     final screenWidth = MediaQuery.of(context).size.width;
     const crossAxisCount = 3;
     const spacing = 4.0;

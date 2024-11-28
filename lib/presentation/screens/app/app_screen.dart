@@ -21,7 +21,6 @@ class _AppScreenState extends ConsumerState<AppScreen> {
   final GlobalKey<FeedScreenState> feedScreenKey = GlobalKey<FeedScreenState>();
   final GlobalKey<ProfileScreenState> profileScreenKey =
       GlobalKey<ProfileScreenState>();
-
   List<Widget> screens = [];
 
   @override
@@ -43,7 +42,7 @@ class _AppScreenState extends ConsumerState<AppScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Hwi's SNS",
+          "SNS APP",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.white,

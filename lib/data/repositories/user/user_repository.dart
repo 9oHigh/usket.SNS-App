@@ -9,7 +9,9 @@ class UserRepository {
   Future<void> createUser(UserModel user) async {
     try {
       await _firestore.collection('users').doc(user.uid).set(user.toJson());
-    } catch (_) {}
+    } catch (_) {
+      rethrow;
+    }
   }
 
   Future<UserModel?> getUserById(String userId) async {

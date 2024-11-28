@@ -14,14 +14,13 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await SharedPreferenceManager().initialize();
   await _initializeFCM();
-  await provideDatabases();
   provideDataSources();
   provideRepositories();
   provideUseCases();
   final isLoggedIn =
       SharedPreferenceManager().getPref<bool>(PrefsType.isLoggedIn) ?? false;
   runApp(ProviderScope(
-    child: MyApp(
+    child: SnsApp(
       isLoggedIn: isLoggedIn,
     ),
   ));
@@ -51,16 +50,15 @@ Future<void> _initializeFCM() async {
       alert: true, badge: true, sound: true);
 }
 
-class MyApp extends StatelessWidget {
+class SnsApp extends StatelessWidget {
   final bool isLoggedIn;
 
-  const MyApp({super.key, required this.isLoggedIn});
+  const SnsApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: main_color),
         scaffoldBackgroundColor: Colors.white,
