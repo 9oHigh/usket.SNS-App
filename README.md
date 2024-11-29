@@ -286,7 +286,7 @@
           이경후
         </a>
         <br />
-        - 회원가입 및 로그인 화면 및 기능 구현<br>
+        - 회원가입 & 로그인 화면 구축 및 기능 구현<br>
         - 피드 화면 및 기능 구현<br>
         - Firestore, cloud storage 구축하고 관련 로직 추가(Create, Read)<br>
         - Cloud Functions를 통해 알림 자동화 구축<br>
